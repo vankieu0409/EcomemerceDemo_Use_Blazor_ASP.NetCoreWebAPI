@@ -1,0 +1,31 @@
+﻿@page "/"
+@using MudBlazor
+@using MudBlazor.Services
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<div class="container">
+    <div class="col-3 justify-content-center">
+        <h3> Test refresh token when call api</h3>
+        <MudButton StartIcon="@Icons.Material.Filled.Refresh" Color="Color.Success" @onclick="RefreshToken"> Submit </MudButton>
+    </div>
+</div>
+
+
+
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+@code
+{
+    async void RefreshToken()
+    {
+        await _authentication.RefreshToken();
+        var usser = await _localStorage.GetItemAsStringAsync("user");
+        await _jsRuntime.InvokeVoidAsync("alert", usser );
+
+    }
+}

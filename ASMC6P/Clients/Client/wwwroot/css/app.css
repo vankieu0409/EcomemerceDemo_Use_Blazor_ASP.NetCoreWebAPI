@@ -1,0 +1,126 @@
+﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700,800,900');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700@display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+html,body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.load {
+    font-family: "Poppins", sans-serif;
+    width: 100vm;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(11, 5, 28);
+}
+.ul1 {
+    display: flex;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    width: 800px;
+    list-style-type: none;
+    margin: auto;
+}
+
+    .ul1 .li1 {
+        position: relative;
+        display: grid;
+        place-items: center;
+        width: 200px;
+        height: 200px;
+    }
+
+.li1 .base {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 8px solid var(--color);
+    border-left: 8px solid transparent;
+    animation: spin 8s linear infinite;
+    filter: drop-shadow(0 0 10px var(--color));
+}
+
+@keyframes spin {
+    0% {
+        transform: rotateX(60deg) rotateZ(0);
+    }
+
+    100% {
+        transform: rotateX(60deg) rotateZ(-360deg);
+    }
+}
+
+.li1 .base::after {
+    position: absolute;
+    content: "";
+    top: 9px;
+    left: 9px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: var(--color);
+}
+
+.li1 .base,
+.li1.title,
+.li1 .icon {
+    position: absolute;
+    color: #b5b5b5;
+    transform: rotateX(60deg) rotateZ(-45deg);
+    cursor: pointer;
+    transition: 0.5s ease-in-out;
+}
+
+.li1 .title {
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 28px;
+    letter-spacing: 2px;
+    transform: rotateY(30deg) skewY(-24deg) translateY(0px);
+    pointer-events: none;
+    opacity: 0;
+    font-family: "Poppins", sans-serif;
+}
+
+.li1 .icon {
+    display: grid;
+    place-items: center;
+    font-size: 80px;
+    height: 100%;
+    pointer-events: none;
+}
+
+.base:hover {
+    filter: drop-shadow(0 0 10px var(--color));
+    /* animation-play-state: paused; */
+}
+
+    .base + .title + .icon {
+        transform: rotateY(30deg) skewY(-24deg) translateY(-160px);
+        color: var(--color);
+        filter: drop-shadow(0 0 3px var(--color));
+        animation: wave 1s ease-in-out infinite;
+    }
+
+    .base + .title {
+        transform: rotateY(30deg) skewY(-24deg) translateY(-90px);
+        color: var(--color);
+        text-shadow: drop-shadow(0 0 3px var(--color));
+        transition-delay: 0.1s;
+        opacity: 1;
+        animation: wave 1s ease-in-out infinite;
+    }
+
+@keyframes wave {
+    0%, 100% {
+        margin-bottom: 0;
+    }
+
+    50% {
+        margin-bottom: 15px;
+    }
+}
