@@ -23,19 +23,19 @@
                                                 <i class="input-icon uil uil-at"></i>
                                             </div>
                                             <div class="form-group mt-2">
-                                                <MudTextField @bind-Value="userLogin.Password" Class="mt-3" Placeholder="Password" For="@(() =>userLogin.Password)" Style="@stypeInput" Variant="Variant.Outlined" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="ButtonTestclick" AdornmentAriaLabel="Show Password"></MudTextField>
+                                                <MudTextField @bind-Value="userLogin.Password" Class="mt-3" Placeholder="Password" For="@(() =>userLogin.Password)" Style="@stypeInput" Variant="Variant.Outlined" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="ButtonTestClick" AdornmentAriaLabel="Show Password"></MudTextField>
                                                 <i class="input-icon uil uil-lock-alt"></i>
                                             </div>
 
-                                            <MudButton ButtonType="ButtonType.Submit" Disabled="@_processing" Class="mt-4" Style="@styleButton">
+                                            <MudButton ButtonType="ButtonType.Submit" OnClick="HandleLogin" Disabled="@_processing" Class="mt-4" Style="@styleButton">
                                                 @if (_processing)
                                                 {
                                                     <MudProgressCircular Size="Size.Small" Color="@Color.Dark"  Indeterminate="true" />
-                                                    <MudText Style=" color: #102770;">Processing</MudText>
+                                                    <MudText Style=" color: #102770; font-size: 13px; font-weight: 600;">Processing</MudText>
                                                 }
                                                 else
                                                 {
-                                                    <MudText Style=" color: #102770;">Submit</MudText>
+                                                    <MudText Style=" color: #102770; font-size: 13px; font-weight: 600;">Submit</MudText>
                                                 }
                                             </MudButton>
 
@@ -61,7 +61,7 @@
                                                 <i class="input-icon uil uil-at"></i>
                                             </div>
                                             <div class="form-group mt-2">
-                                                <MudTextField @bind-Value="userRegister.Password" Class="mt-3" Placeholder="Password" For="@(() =>userRegister.Password)" Style="@stypeInput" Variant="Variant.Outlined" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="ButtonTestclick" AdornmentAriaLabel="Show Password"></MudTextField>
+                                                <MudTextField @bind-Value="userRegister.Password" Class="mt-3" Placeholder="Password" For="@(() =>userRegister.Password)" Style="@stypeInput" Variant="Variant.Outlined" InputType="@PasswordInput" Adornment="Adornment.End" AdornmentIcon="@PasswordInputIcon" OnAdornmentClick="ButtonTestClick" AdornmentAriaLabel="Show Password"></MudTextField>
                                                 <i class="input-icon uil uil-lock-alt"></i>
                                             </div>
                                             <MudButton ButtonType="ButtonType.Submit" Class="mt-4" Style="@styleButton">submit</MudButton>

@@ -12,7 +12,7 @@ public interface IAuthenticationService
     string CreateToken(UserEntity user);
     RefreshTokenDto CreateRefreshToken();
     public void SetRefreshToken(RefreshTokenDto refreshToken, UserEntity user);
-    public void CreateRoles(RoleEntity role);
+    public bool Logout();
     public void UpdateRoles(RoleEntity role);
     public Task<IList<string>> GetRolesOfUser(UserEntity user);
 }

@@ -8,9 +8,7 @@ using ASMC6P.Shared.ViewModels;
 
 using AutoMapper;
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 using System.IdentityModel.Tokens.Jwt;
@@ -168,21 +166,6 @@ public class AuthenticationService : IAuthenticationService
 
     public string CreateToken(UserEntity user)
     {
-        //List<Claim> claims = new List<Claim>
-        //{
-        //    new Claim(ClaimTypes.Name, user.UserName),
-        //    new Claim(ClaimTypes.Role, "Admin")
-        //};
-
-        //var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
-        //    _configuration.GetSection("Jwt:Secret").Value));
-
-        //var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-        //var token = new JwtSecurityToken(
-        //    claims: claims,
-        //    expires: DateTime.Now.AddDays(1),
-        //    signingCredentials: creds);
         var userRoles = _roleRepository.AsQueryable().FirstOrDefault(p =>
             p.Id == _context.UserRoles.Where(c => c.UserId == user.Id).Select(c => c.RoleId).FirstOrDefault());
         List<Claim> authClaims = new()
@@ -241,9 +224,15 @@ public class AuthenticationService : IAuthenticationService
         _refreshTokenRepository.SaveChangesAsync();
     }
 
-    public void CreateRoles(RoleEntity role)
+    public bool Logout()
     {
-        _roleManager.CreateAsync(role);
+        var logout = _signInManager.SignOutAsync();
+        _httpContextAccessor?.HttpContext?.Response.Cookies.Delete("refreshToken");
+        var a = logout.IsCompletedSuccessfully;
+        if (logout.IsCompletedSuccessfully) return logout.IsCompletedSuccessfully;
+        else if (logout.IsCanceled) return false;
+        else if (logout.IsCompleted) return logout.IsCompleted;
+        else return false;
     }
 
     public void UpdateRoles(RoleEntity role)

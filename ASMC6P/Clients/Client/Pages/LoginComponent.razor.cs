@@ -13,7 +13,7 @@ public partial class LoginComponent : ComponentBase
 {
 
     public List<string> _messErorrCollection = new();
-
+    [Inject] private IDialogService DialogService { get; set; }
     private LoginUserViewModel userLogin { get; set; } = new();
 
     private CreateUserViewModel userRegister { get; set; } = new();
@@ -38,18 +38,21 @@ public partial class LoginComponent : ComponentBase
         await Task.Delay(2000);
         _processing = false;
     }
-    private async void HandleLogin()
+    private async Task HandleLogin()
     {
         _processing = true;
         // ValidateFormLogin();
         var result = await _authentication.LoginService(userLogin);
-
-        if (result)
+        _processing = false;
+        if (result.Success)
         {
-            _processing = false;
-            await _jsRuntime.InvokeVoidAsync("alert", "Đăng nhập thành công!");
-
+            await DialogService.ShowMessageBox("Thông báo", "Đăng nhập Thành Công!", yesText: "Triển thôi!");
             _navigationManager.NavigateTo("/");
+        }
+        else
+        {
+            await DialogService.ShowMessageBox("Thông báo", result.Message, yesText: "Làm lại!");
+            _navigationManager.NavigateTo("/login");
         }
 
     }
@@ -58,13 +61,15 @@ public partial class LoginComponent : ComponentBase
 
     #region UserRegister
 
-    private async void RegisterHandle()
+    private async Task RegisterHandle()
     {
+        _processing = true;
         var isAccessed = await _authentication.RegiterService(userRegister);
-        await _jsRuntime.InvokeVoidAsync("alert", "Đăng ký thành công");
+        await DialogService.ShowMessageBox("Thông báo", "Đăng ký Thành Công!", yesText: "Triển thôi!");
+        _processing = false;
         if (isAccessed) _navigationManager.NavigateTo("/login");
     }
-    void ButtonTestclick()
+    void ButtonTestClick()
     {
         if (isShow)
         {

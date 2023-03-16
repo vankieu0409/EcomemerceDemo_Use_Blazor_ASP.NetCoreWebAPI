@@ -1,10 +1,13 @@
 ﻿
-    <MudN></MudN>
-    <MudDrawerHeader>
-        <MudIcon Size="Size.Large" Icon="@Icons.Custom.Brands.MicrosoftVisualStudio" Class="justify-content-center"></MudIcon>
-    </MudDrawerHeader>
-    <MudNavMenu>
-    <MudNavLink Href="/" Icon="@Icons.Material.Filled.Dashboard"  Match="NavLinkMatch.All"> Dashboard</MudNavLink>
+<MudNavMenu>
+    <MudNavLink Href="/">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.button" ></MudText>
+        </MudDrawerHeader>
+    </MudNavLink>
+    <MudDivider DividerType="DividerType.Middle" />
+
+    <MudNavLink Href="/" Icon="@Icons.Material.Filled.Dashboard" Match="NavLinkMatch.All"> Dashboard</MudNavLink>
     <MudNavLink Href="/servers" Icon="@Icons.Material.Filled.Science" Match="NavLinkMatch.Prefix"> Servers</MudNavLink>
     <MudNavGroup Title="Settings" Icon="@Icons.Material.Filled.Settings" Expanded="true">
         <MudNavLink Href="/users" Icon="@Icons.Material.Filled.EmojiPeople" Match="NavLinkMatch.Prefix"> Users</MudNavLink>

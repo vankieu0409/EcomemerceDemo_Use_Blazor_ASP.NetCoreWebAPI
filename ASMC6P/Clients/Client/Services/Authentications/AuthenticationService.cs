@@ -22,11 +22,11 @@ public class AuthenticationService : IAuthenticationService
         _localStorage = localStorage ?? throw new ArgumentNullException(nameof(localStorage));
     }
 
-    public async Task<bool> LoginService(LoginUserViewModel viewModel)
+    public async Task<UserDto> LoginService(LoginUserViewModel viewModel)
     {
         var result = await _httpClient.PostAsJsonAsync("api/Authentication/login", viewModel);
         var user = await result.Content.ReadFromJsonAsync<UserDto>();
-
+        user.Success = result.IsSuccessStatusCode;
         if (result.IsSuccessStatusCode)
         {
             await _localStorage.SetItemAsync("bearer", user.AccessToken);
@@ -34,7 +34,7 @@ public class AuthenticationService : IAuthenticationService
             await _authStateProvider.GetAuthenticationStateAsync();
         }
 
-        return result.IsSuccessStatusCode;
+        return user;
     }
 
     public async Task<bool> RegiterService(CreateUserViewModel viewModel)
@@ -64,6 +64,7 @@ public class AuthenticationService : IAuthenticationService
 
     public async Task<bool> LogoutService()
     {
+        var results = await _httpClient.GetStringAsync("Logout");
         await _localStorage.ClearAsync();
         var checkTokenLogout = string.IsNullOrEmpty(await _localStorage.GetItemAsStringAsync("bearer"));
         //_authStateProvider.NotifyAuthenticationStateChangedForLogout();

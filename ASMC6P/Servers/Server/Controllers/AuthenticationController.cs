@@ -35,18 +35,11 @@ namespace ASMC6P.Server.Controllers
             var response = await _authenticationService.Login(request);
             if (response.Success)
             {
-                var cookieOptions = new CookieOptions()
-                {
-                    // set the properties of the cookie as needed
-                    HttpOnly = true,
-                    Expires = DateTime.Now.AddDays(3),
-                    Secure = true
-                };
                 return Ok(response);
             }
 
 
-            return BadRequest(response.Message);
+            return BadRequest(response);
         }
         [HttpGet("refresh-token")]
         [Authorize]
@@ -71,14 +64,12 @@ namespace ASMC6P.Server.Controllers
             return Ok();
         }
 
-        [HttpGet("/signin")]
-        [Authorize(Roles = "Administrator")]
+        [HttpGet("/Logout")]
+        [Authorize]
         public async Task<IActionResult> SignIn()
         {
 
-            // Access the user's information from the claims
-            // ...
-            return Ok("Access the users information from the claims");
+            return Ok(_authenticationService.Logout());
         }
     }
 }
