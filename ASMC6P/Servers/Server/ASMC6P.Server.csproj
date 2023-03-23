@@ -35,7 +35,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Products\" />
+    <Compile Update="Repositories\ProductRepositories\ProductRepository.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
 
 

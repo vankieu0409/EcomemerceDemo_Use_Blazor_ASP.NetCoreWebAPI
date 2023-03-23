@@ -10,4 +10,5 @@ public class UserEntity : IdentityUser<Guid>, IEntity
     public string DisplayName { get; set; }
     public string Decriptions { get; set; }
     public string Image { get; set; }
+    public string Address { get; set; }
 }

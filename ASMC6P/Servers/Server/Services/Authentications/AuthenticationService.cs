@@ -56,6 +56,12 @@ public class AuthenticationService : IAuthenticationService
         var signManager = await _signInManager.PasswordSignInAsync(user, viewModel.Password, false, lockoutOnFailure: false);
         if (signManager.Succeeded)
         {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true
+            };
+            _httpContextAccessor?.HttpContext?.Response.Cookies.Append("userid", user.Id.ToString(), cookieOptions);
             var userResult = _mapper.Map<UserDto>(user);
 
             var token = CreateToken(user);

@@ -1,9 +1,10 @@
 ﻿using ASMC6P.Server.Data;
+using ASMC6P.Server.Repositories.CategoryRepositories;
+using ASMC6P.Server.Repositories.ImageRepositories;
 using ASMC6P.Server.Repositories.RefreshTokenRepositories;
 using ASMC6P.Server.Repositories.RoleRepositories;
 using ASMC6P.Server.Repositories.UserRepositories;
 using ASMC6P.Server.Services.Authentications;
-
 using ASMC6P.Shared.Entities;
 
 using AutoMapper.Extensions.ExpressionMapping;
@@ -100,7 +101,9 @@ public static class ServiceCollection
 
         services.AddDbContext<ApplicationDbContext>(c => c.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
         services.AddHttpContextAccessor();
+        services.AddTransient<ICategoryRepository, CategoryRepository>();
         services.AddTransient<IUserRepository, UserRepository>();
+        services.AddTransient<IImageRepository, ImageRepository>();
         services.AddTransient<IRoleRepository, RoleRepository>();
         services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddTransient<UserManager<UserEntity>>();
