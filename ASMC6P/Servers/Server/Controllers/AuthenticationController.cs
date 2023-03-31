@@ -1,4 +1,5 @@
 ﻿using ASMC6P.Shared.Dtos;
+using ASMC6P.Shared.Entities;
 using ASMC6P.Shared.ViewModels;
 
 using Microsoft.AspNetCore.Authentication;
@@ -63,6 +64,14 @@ namespace ASMC6P.Server.Controllers
             // ...
             return Ok();
         }
+
+        [HttpGet("/roles")]
+        [AllowAnonymous]
+        public async Task<List<RoleEntity>> GetRoleAsync()
+        {
+            return await _authenticationService.GetRoles();
+        }
+
 
         [HttpGet("/Logout")]
         [Authorize]

@@ -15,4 +15,6 @@ public class CreateUserViewModel
     [Required(ErrorMessage = "Không được để trống!")]
     [EmailAddress(ErrorMessage = "Email không đúng định dạng!")]
     public string Email { get; set; } = string.Empty;
+
+    public string Role { get; set; }
 }

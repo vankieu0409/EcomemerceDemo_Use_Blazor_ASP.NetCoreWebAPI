@@ -15,4 +15,6 @@ public interface IAuthenticationService
     public bool Logout();
     public void UpdateRoles(RoleEntity role);
     public Task<IList<string>> GetRolesOfUser(UserEntity user);
+
+    public Task<List<RoleEntity>> GetRoles();
 }

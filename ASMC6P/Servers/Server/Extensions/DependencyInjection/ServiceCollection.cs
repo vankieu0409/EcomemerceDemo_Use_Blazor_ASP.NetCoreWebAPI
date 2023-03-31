@@ -99,7 +99,8 @@ public static class ServiceCollection
         //        options.CallbackPath = "/signin-facebook";
         //    });
 
-        services.AddDbContext<ApplicationDbContext>(c => c.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+        services.AddDbContext<ApplicationDbContext>(c => c.UseSqlServer(configuration.GetConnectionString("MSSQLConnection")));
+        //services.AddDbContext<ApplicationDbContext>(c => c.UseNpgsql(configuration.GetConnectionString("PostgreSQLConnection")));
         services.AddHttpContextAccessor();
         services.AddTransient<ICategoryRepository, CategoryRepository>();
         services.AddTransient<IUserRepository, UserRepository>();

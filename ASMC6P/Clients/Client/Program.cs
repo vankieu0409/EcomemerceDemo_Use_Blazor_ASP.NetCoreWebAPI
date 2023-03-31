@@ -1,6 +1,6 @@
 using ASMC6P.Client;
+using ASMC6P.Client.Extensions.DependencyInjection;
 using ASMC6P.Client.Infrastructure.Authentication;
-using ASMC6P.Client.Infrastructure.Extensions.DependencyInjection;
 
 using Blazored.LocalStorage;
 

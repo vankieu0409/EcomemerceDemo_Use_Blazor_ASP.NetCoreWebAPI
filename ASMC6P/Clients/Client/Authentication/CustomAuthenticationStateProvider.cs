@@ -59,7 +59,7 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider
             }
             catch
             {
-                await _localStorage.RemoveItemAsync("authToken");
+                await _localStorage.RemoveItemAsync("bearer");
                 identity = new ClaimsIdentity();
             }
         }

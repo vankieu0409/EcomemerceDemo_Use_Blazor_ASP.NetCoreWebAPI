@@ -15,6 +15,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 
 namespace ASMC6P.Server.Services.Authentications;
 
@@ -33,7 +34,7 @@ public class AuthenticationService : IAuthenticationService
 
     public AuthenticationService(SignInManager<UserEntity> signInManager, UserManager<UserEntity> userManager,
         ApplicationDbContext context, IUserRepository userRepository, IRoleRepository roleRepository, IConfiguration configuration, IRefreshTokenRepository refreshTokenRepository, IMapper mapper,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor, RoleManager<RoleEntity> roleManager)
     {
         _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
         _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
@@ -44,6 +45,7 @@ public class AuthenticationService : IAuthenticationService
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
         _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
+        _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
     }
 
     public async Task<UserDto> Login(LoginUserViewModel viewModel)
@@ -56,12 +58,6 @@ public class AuthenticationService : IAuthenticationService
         var signManager = await _signInManager.PasswordSignInAsync(user, viewModel.Password, false, lockoutOnFailure: false);
         if (signManager.Succeeded)
         {
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = true
-            };
-            _httpContextAccessor?.HttpContext?.Response.Cookies.Append("userid", user.Id.ToString(), cookieOptions);
             var userResult = _mapper.Map<UserDto>(user);
 
             var token = CreateToken(user);
@@ -202,7 +198,7 @@ public class AuthenticationService : IAuthenticationService
             Expires = DateTime.Now.AddHours(Convert.ToInt16(_configuration["Authentication:Jwt:ExpiresTime"])),
             Created = DateTime.Now
         };
-
+        Console.WriteLine(JsonSerializer.Serialize(refreshToken));
         return refreshToken;
     }
 
@@ -249,5 +245,10 @@ public class AuthenticationService : IAuthenticationService
     public async Task<IList<string>> GetRolesOfUser(UserEntity user)
     {
         return await _userManager.GetRolesAsync(user);
+    }
+    public async Task<List<RoleEntity>> GetRoles()
+    {
+        var roleCollection = _roleManager.Roles.ToList();
+        return roleCollection;
     }
 }

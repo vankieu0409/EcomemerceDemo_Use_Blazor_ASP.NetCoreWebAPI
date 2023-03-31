@@ -63,6 +63,7 @@ public partial class LoginComponent : ComponentBase
 
     private async Task RegisterHandle()
     {
+        userRegister.Role = "Customers";
         _processing = true;
         var isAccessed = await _authentication.RegiterService(userRegister);
         await DialogService.ShowMessageBox("Thông báo", "Đăng ký Thành Công!", yesText: "Triển thôi!");

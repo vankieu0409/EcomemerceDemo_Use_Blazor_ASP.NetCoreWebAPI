@@ -21,7 +21,7 @@
                             <MudAvatar Color="Color.Warning" Image="@userDto.Image" />
                         </ActivatorContent>
                         <ChildContent>
-                            <MudMenuItem Href="/user{Id}">Profile</MudMenuItem>
+                            <MudMenuItem Href="user{Id}">Profile</MudMenuItem>
                             <MudMenuItem>Usage</MudMenuItem>
                             <MudMenuItem OnClick="BeginSignOut">Sign Out</MudMenuItem>
                         </ChildContent>
@@ -62,6 +62,11 @@
         // Because variable is not two-way bound, we need to update it ourself
         _isDarkMode = toggled;
     }
+
+    //protected  override async void OnInitialized()
+    //{
+    //    //userDto = await _localStorage.GetItemAsync<UserDto>("user");
+    //}
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

@@ -11,11 +11,10 @@ namespace ASMC6P.Server.Data;
 
 public class ApplicationDbContext : IdentityDbContext<UserEntity, RoleEntity, Guid>
 {
-    private readonly UserManager<UserEntity> _userManager;
 
-    protected ApplicationDbContext(UserManager<UserEntity> userManager)
+    protected ApplicationDbContext()
     {
-        _userManager = userManager;
+
     }
     public ApplicationDbContext([NotNull] DbContextOptions<ApplicationDbContext> options) : base(options)
     {

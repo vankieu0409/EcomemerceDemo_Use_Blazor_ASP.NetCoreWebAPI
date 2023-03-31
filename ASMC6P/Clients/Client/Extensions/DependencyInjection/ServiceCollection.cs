@@ -1,11 +1,12 @@
-﻿using ASMC6P.Client.Infrastructure.Authentication;
+﻿using ASMC6P.Client.Extensions.BackgoundServices;
+using ASMC6P.Client.Infrastructure.Authentication;
 using ASMC6P.Client.Services.Authentications;
 
 using Microsoft.AspNetCore.Components.Authorization;
 
 using System.Reflection;
 
-namespace ASMC6P.Client.Infrastructure.Extensions.DependencyInjection;
+namespace ASMC6P.Client.Extensions.DependencyInjection;
 
 public static class ServiceCollection
 {
@@ -16,6 +17,8 @@ public static class ServiceCollection
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         //services.AddSingleton<IJSRuntime>(provider => provider.GetRequiredService<IJSRuntime>());
         services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+        services.AddHttpContextAccessor();
+        services.AddHostedService<CallRefreshToken>();
 
         return services;
     }

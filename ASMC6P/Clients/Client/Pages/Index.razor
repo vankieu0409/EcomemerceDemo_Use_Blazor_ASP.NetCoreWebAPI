@@ -25,4 +25,12 @@ Welcome to your new app.
         await _jsRuntime.InvokeVoidAsync("alert", usser );
 
     }
+
+    protected async override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        var roles = await _authentication.GetRoleCollection();
+        await _localStorage.SetItemAsync("roles", roles);
+    }
+
 }
