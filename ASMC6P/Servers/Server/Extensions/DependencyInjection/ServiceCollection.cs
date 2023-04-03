@@ -1,10 +1,17 @@
 ﻿using ASMC6P.Server.Data;
+using ASMC6P.Server.Repositories.CartRepositories;
 using ASMC6P.Server.Repositories.CategoryRepositories;
 using ASMC6P.Server.Repositories.ImageRepositories;
+using ASMC6P.Server.Repositories.OrderRepositories;
+using ASMC6P.Server.Repositories.ProductRepositories;
 using ASMC6P.Server.Repositories.RefreshTokenRepositories;
 using ASMC6P.Server.Repositories.RoleRepositories;
 using ASMC6P.Server.Repositories.UserRepositories;
 using ASMC6P.Server.Services.Authentications;
+using ASMC6P.Server.Services.CartService;
+using ASMC6P.Server.Services.CategoryService;
+using ASMC6P.Server.Services.OrderService;
+using ASMC6P.Server.Services.ProductService;
 using ASMC6P.Shared.Entities;
 
 using AutoMapper.Extensions.ExpressionMapping;
@@ -102,16 +109,26 @@ public static class ServiceCollection
         services.AddDbContext<ApplicationDbContext>(c => c.UseSqlServer(configuration.GetConnectionString("MSSQLConnection")));
         //services.AddDbContext<ApplicationDbContext>(c => c.UseNpgsql(configuration.GetConnectionString("PostgreSQLConnection")));
         services.AddHttpContextAccessor();
+        // services.AddScoped(typeof(IRepositoryAsync<>), typeof(RepositoryAsync<>)); //chỉ dùng cho class Gennerric
         services.AddTransient<ICategoryRepository, CategoryRepository>();
         services.AddTransient<IUserRepository, UserRepository>();
         services.AddTransient<IImageRepository, ImageRepository>();
         services.AddTransient<IRoleRepository, RoleRepository>();
         services.AddTransient<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddTransient<ICartRepository, CartRepository>();
+        services.AddTransient<IOrdersRepository, OrdersRepository>();
+        services.AddTransient<IProductRepository, ProductRepository>();
         services.AddTransient<UserManager<UserEntity>>();
         services.AddTransient<RoleManager<RoleEntity>>();
         services.AddTransient<SignInManager<UserEntity>>();
 
         services.AddTransient<IAuthenticationService, AuthenticationService>();
+        services.AddTransient<ICartService, CartService>();
+        services.AddTransient<ICategoryService, CategoryService>();
+        services.AddTransient<IOrderService, OrderService>();
+        services.AddTransient<IProductService, ProductService>();
+
         return services;
+
     }
 }

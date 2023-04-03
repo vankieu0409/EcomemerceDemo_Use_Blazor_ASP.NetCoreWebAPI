@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASMC6P.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230323204624_kieu")]
-    partial class kieu
+    [Migration("20230403081408_Intialized")]
+    partial class Intialized
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -49,7 +49,7 @@ namespace ASMC6P.Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("Deleted")
+                    b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
@@ -71,7 +71,7 @@ namespace ASMC6P.Server.Migrations
                         new
                         {
                             Id = new Guid("03b15145-6597-4a71-82c7-14e36cfd6780"),
-                            Deleted = false,
+                            IsDeleted = false,
                             Name = "Books",
                             Url = "books",
                             Visible = true
@@ -79,7 +79,7 @@ namespace ASMC6P.Server.Migrations
                         new
                         {
                             Id = new Guid("6faadb7d-ef79-4f02-8fba-b25e76f70a2c"),
-                            Deleted = false,
+                            IsDeleted = false,
                             Name = "Movies",
                             Url = "movies",
                             Visible = true
@@ -87,7 +87,7 @@ namespace ASMC6P.Server.Migrations
                         new
                         {
                             Id = new Guid("8dbb355f-bee4-4e1d-8081-fcfefebec213"),
-                            Deleted = false,
+                            IsDeleted = false,
                             Name = "Video Games",
                             Url = "video-games",
                             Visible = true
@@ -104,12 +104,7 @@ namespace ASMC6P.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("ProductEntityId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ProductEntityId");
 
                     b.ToTable("Images");
                 });
@@ -142,20 +137,15 @@ namespace ASMC6P.Server.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ProductTypeId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("OrderId", "ProductId", "ProductTypeId");
+                    b.HasKey("OrderId", "ProductId");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("ProductTypeId");
 
                     b.ToTable("OrderItems");
                 });
@@ -169,26 +159,32 @@ namespace ASMC6P.Server.Migrations
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Featured")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ImageUrl")
+                    b.Property<string>("Image")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title")
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Visible")
-                        .HasColumnType("bit");
+                    b.Property<decimal>("NewPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("OriginalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UploadedDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -201,371 +197,144 @@ namespace ASMC6P.Server.Migrations
                         {
                             Id = new Guid("8f6f4d09-4292-48cc-a8bf-76e7fe0bb961"),
                             CategoryId = new Guid("03b15145-6597-4a71-82c7-14e36cfd6780"),
-                            Deleted = false,
                             Description = "The Hitchhiker's Guide to the Galaxy[note 1] (sometimes referred to as HG2G,[1] HHGTTG,[2] H2G2,[3] or tHGttG) is a comedy science fiction franchise created by Douglas Adams. Originally a 1978 radio comedy broadcast on BBC Radio 4, it was later adapted to other formats, including stage shows, novels, comic books, a 1981 TV series, a 1984 text-based computer game, and 2005 feature film.",
-                            Featured = true,
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/en/b/bd/H2G2_UK_front_cover.jpg",
-                            Title = "The Hitchhiker's Guide to the Galaxy",
-                            Visible = true
+                            Image = "https://upload.wikimedia.org/wikipedia/en/b/bd/H2G2_UK_front_cover.jpg",
+                            IsDeleted = false,
+                            Name = "The Hitchhiker's Guide to the Galaxy",
+                            NewPrice = 123m,
+                            OriginalPrice = 345m,
+                            Quantity = 1,
+                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1638)
                         },
                         new
                         {
                             Id = new Guid("e1cee7b3-a6ae-4ae3-bcf4-1955129d8197"),
                             CategoryId = new Guid("03b15145-6597-4a71-82c7-14e36cfd6780"),
-                            Deleted = false,
                             Description = "Ready Player One is a 2011 science fiction novel, and the debut novel of American author Ernest Cline. The story, set in a dystopia in 2045, follows protagonist Wade Watts on his search for an Easter egg in a worldwide virtual reality game, the discovery of which would lead him to inherit the game creator's fortune. Cline sold the rights to publish the novel in June 2010, in a bidding war to the Crown Publishing Group (a division of Random House).[1] The book was published on August 16, 2011.[2] An audiobook was released the same day; it was narrated by Wil Wheaton, who was mentioned briefly in one of the chapters.[3][4]Ch. 20 In 2012, the book received an Alex Award from the Young Adult Library Services Association division of the American Library Association[5] and won the 2011 Prometheus Award.[6]",
-                            Featured = false,
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/en/a/a4/Ready_Player_One_cover.jpg",
-                            Title = "Ready Player One",
-                            Visible = true
+                            Image = "https://upload.wikimedia.org/wikipedia/en/a/a4/Ready_Player_One_cover.jpg",
+                            IsDeleted = false,
+                            Name = "Ready Player One",
+                            NewPrice = 123m,
+                            OriginalPrice = 345m,
+                            Quantity = 1,
+                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1659)
                         },
                         new
                         {
                             Id = new Guid("772bc058-2e46-4d3f-ac02-3dd4a6a5aced"),
                             CategoryId = new Guid("03b15145-6597-4a71-82c7-14e36cfd6780"),
-                            Deleted = false,
                             Description = "Nineteen Eighty-Four (also stylised as 1984) is a dystopian social science fiction novel and cautionary tale written by English writer George Orwell. It was published on 8 June 1949 by Secker & Warburg as Orwell's ninth and final book completed in his lifetime. Thematically, it centres on the consequences of totalitarianism, mass surveillance and repressive regimentation of people and behaviours within society.[2][3] Orwell, a democratic socialist, modelled the totalitarian government in the novel after Stalinist Russia and Nazi Germany.[2][3][4] More broadly, the novel examines the role of truth and facts within politics and the ways in which they are manipulated.",
-                            Featured = false,
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/c/c3/1984first.jpg",
-                            Title = "Nineteen Eighty-Four",
-                            Visible = true
+                            Image = "https://upload.wikimedia.org/wikipedia/commons/c/c3/1984first.jpg",
+                            IsDeleted = false,
+                            Name = "Nineteen Eighty-Four",
+                            NewPrice = 123m,
+                            OriginalPrice = 345m,
+                            Quantity = 1,
+                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1662)
                         },
                         new
                         {
                             Id = new Guid("71b5e16d-7c46-41b8-9b5a-cb00376c4b60"),
                             CategoryId = new Guid("6faadb7d-ef79-4f02-8fba-b25e76f70a2c"),
-                            Deleted = false,
                             Description = "The Matrix is a 1999 science fiction action film written and directed by the Wachowskis, and produced by Joel Silver. Starring Keanu Reeves, Laurence Fishburne, Carrie-Anne Moss, Hugo Weaving, and Joe Pantoliano, and as the first installment in the Matrix franchise, it depicts a dystopian future in which humanity is unknowingly trapped inside a simulated reality, the Matrix, which intelligent machines have created to distract humans while using their bodies as an energy source. When computer programmer Thomas Anderson, under the hacker alias \"Neo\", uncovers the truth, he \"is drawn into a rebellion against the machines\" along with other people who have been freed from the Matrix.",
-                            Featured = false,
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/en/c/c1/The_Matrix_Poster.jpg",
-                            Title = "The Matrix",
-                            Visible = true
+                            Image = "https://upload.wikimedia.org/wikipedia/en/c/c1/The_Matrix_Poster.jpg",
+                            IsDeleted = false,
+                            Name = "The Matrix",
+                            NewPrice = 123m,
+                            OriginalPrice = 345m,
+                            Quantity = 1,
+                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1666)
                         },
                         new
                         {
                             Id = new Guid("0e7f6b60-6e98-4220-93ea-45f64e0f1aa2"),
                             CategoryId = new Guid("6faadb7d-ef79-4f02-8fba-b25e76f70a2c"),
-                            Deleted = false,
                             Description = "Back to the Future is a 1985 American science fiction film directed by Robert Zemeckis. Written by Zemeckis and Bob Gale, it stars Michael J. Fox, Christopher Lloyd, Lea Thompson, Crispin Glover, and Thomas F. Wilson. Set in 1985, the story follows Marty McFly (Fox), a teenager accidentally sent back to 1955 in a time-traveling DeLorean automobile built by his eccentric scientist friend Doctor Emmett \"Doc\" Brown (Lloyd). Trapped in the past, Marty inadvertently prevents his future parents' meeting—threatening his very existence—and is forced to reconcile the pair and somehow get back to the future.",
-                            Featured = true,
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/en/d/d2/Back_to_the_Future.jpg",
-                            Title = "Back to the Future",
-                            Visible = true
+                            Image = "https://upload.wikimedia.org/wikipedia/en/d/d2/Back_to_the_Future.jpg",
+                            IsDeleted = false,
+                            Name = "Back to the Future",
+                            NewPrice = 123m,
+                            OriginalPrice = 345m,
+                            Quantity = 1,
+                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1670)
                         },
                         new
                         {
                             Id = new Guid("913f130b-c1b6-4a98-8d63-4cf316da3fc1"),
                             CategoryId = new Guid("6faadb7d-ef79-4f02-8fba-b25e76f70a2c"),
-                            Deleted = false,
                             Description = "Toy Story is a 1995 American computer-animated comedy film produced by Pixar Animation Studios and released by Walt Disney Pictures. The first installment in the Toy Story franchise, it was the first entirely computer-animated feature film, as well as the first feature film from Pixar. The film was directed by John Lasseter (in his feature directorial debut), and written by Joss Whedon, Andrew Stanton, Joel Cohen, and Alec Sokolow from a story by Lasseter, Stanton, Pete Docter, and Joe Ranft. The film features music by Randy Newman, was produced by Bonnie Arnold and Ralph Guggenheim, and was executive-produced by Steve Jobs and Edwin Catmull. The film features the voices of Tom Hanks, Tim Allen, Don Rickles, Wallace Shawn, John Ratzenberger, Jim Varney, Annie Potts, R. Lee Ermey, John Morris, Laurie Metcalf, and Erik von Detten. Taking place in a world where anthropomorphic toys come to life when humans are not present, the plot focuses on the relationship between an old-fashioned pull-string cowboy doll named Woody and an astronaut action figure, Buzz Lightyear, as they evolve from rivals competing for the affections of their owner, Andy Davis, to friends who work together to be reunited with Andy after being separated from him.",
-                            Featured = false,
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/en/1/13/Toy_Story.jpg",
-                            Title = "Toy Story",
-                            Visible = true
+                            Image = "https://upload.wikimedia.org/wikipedia/en/1/13/Toy_Story.jpg",
+                            IsDeleted = false,
+                            Name = "Toy Story",
+                            NewPrice = 123m,
+                            OriginalPrice = 345m,
+                            Quantity = 1,
+                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1673)
                         },
                         new
                         {
                             Id = new Guid("453f44f7-e33e-4477-a2ad-a78e232db482"),
                             CategoryId = new Guid("8dbb355f-bee4-4e1d-8081-fcfefebec213"),
-                            Deleted = false,
                             Description = "Half-Life 2 is a 2004 first-person shooter game developed and published by Valve. Like the original Half-Life, it combines shooting, puzzles, and storytelling, and adds features such as vehicles and physics-based gameplay.",
-                            Featured = false,
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/en/2/25/Half-Life_2_cover.jpg",
-                            Title = "Half-Life 2",
-                            Visible = true
+                            Image = "https://upload.wikimedia.org/wikipedia/en/2/25/Half-Life_2_cover.jpg",
+                            IsDeleted = false,
+                            Name = "Half-Life 2",
+                            NewPrice = 123m,
+                            OriginalPrice = 345m,
+                            Quantity = 1,
+                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1676)
                         },
                         new
                         {
                             Id = new Guid("5cda1ac6-7e1f-4f28-84e9-319455fc7016"),
                             CategoryId = new Guid("8dbb355f-bee4-4e1d-8081-fcfefebec213"),
-                            Deleted = false,
                             Description = "Diablo II is an action role-playing hack-and-slash computer video game developed by Blizzard North and published by Blizzard Entertainment in 2000 for Microsoft Windows, Classic Mac OS, and macOS.",
-                            Featured = false,
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/en/d/d5/Diablo_II_Coverart.png",
-                            Title = "Diablo II",
-                            Visible = true
+                            Image = "https://upload.wikimedia.org/wikipedia/en/d/d5/Diablo_II_Coverart.png",
+                            IsDeleted = false,
+                            Name = "Diablo II",
+                            NewPrice = 123m,
+                            OriginalPrice = 345m,
+                            Quantity = 1,
+                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1680)
                         },
                         new
                         {
                             Id = new Guid("26429623-f8b1-49de-85a3-57e2c370afcb"),
                             CategoryId = new Guid("8dbb355f-bee4-4e1d-8081-fcfefebec213"),
-                            Deleted = false,
                             Description = "Day of the Tentacle, also known as Maniac Mansion II: Day of the Tentacle, is a 1993 graphic adventure game developed and published by LucasArts. It is the sequel to the 1987 game Maniac Mansion.",
-                            Featured = true,
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/en/7/79/Day_of_the_Tentacle_artwork.jpg",
-                            Title = "Day of the Tentacle",
-                            Visible = true
+                            Image = "https://upload.wikimedia.org/wikipedia/en/7/79/Day_of_the_Tentacle_artwork.jpg",
+                            IsDeleted = false,
+                            Name = "Day of the Tentacle",
+                            NewPrice = 123m,
+                            OriginalPrice = 345m,
+                            Quantity = 1,
+                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1684)
                         },
                         new
                         {
                             Id = new Guid("ff619bfc-5866-4a5b-9a95-9a8a0e457c91"),
                             CategoryId = new Guid("8dbb355f-bee4-4e1d-8081-fcfefebec213"),
-                            Deleted = false,
                             Description = "The Xbox is a home video game console and the first installment in the Xbox series of video game consoles manufactured by Microsoft.",
-                            Featured = false,
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/4/43/Xbox-console.jpg",
-                            Title = "Xbox",
-                            Visible = true
+                            Image = "https://upload.wikimedia.org/wikipedia/commons/4/43/Xbox-console.jpg",
+                            IsDeleted = false,
+                            Name = "Xbox",
+                            NewPrice = 123m,
+                            OriginalPrice = 345m,
+                            Quantity = 1,
+                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1688)
                         },
                         new
                         {
                             Id = new Guid("285a8637-e594-4729-b408-67819bb3e3e9"),
                             CategoryId = new Guid("8dbb355f-bee4-4e1d-8081-fcfefebec213"),
-                            Deleted = false,
                             Description = "The Super Nintendo Entertainment System (SNES), also known as the Super NES or Super Nintendo, is a 16-bit home video game console developed by Nintendo that was released in 1990 in Japan and South Korea.",
-                            Featured = false,
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/e/ee/Nintendo-Super-Famicom-Set-FL.jpg",
-                            Title = "Super Nintendo Entertainment System",
-                            Visible = true
-                        });
-                });
-
-            modelBuilder.Entity("ASMC6P.Shared.Entities.ProductTypeEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ProductTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("4284009c-0956-492e-ba3f-b6b0deed917c"),
-                            Name = "Default"
-                        },
-                        new
-                        {
-                            Id = new Guid("73f168d0-0faa-4005-a0fb-ff875ef8fbd9"),
-                            Name = "Paperback"
-                        },
-                        new
-                        {
-                            Id = new Guid("59178d1e-9a24-4ca7-90c1-ddd4c9d8dd37"),
-                            Name = "E-Book"
-                        },
-                        new
-                        {
-                            Id = new Guid("4c42d2c7-24ee-4e11-8dcf-b44c6d8b2e90"),
-                            Name = "Audiobook"
-                        },
-                        new
-                        {
-                            Id = new Guid("0e576d72-004c-47dc-a778-b1e9579d4893"),
-                            Name = "Stream"
-                        },
-                        new
-                        {
-                            Id = new Guid("ceb89799-0d43-4311-8ed6-65e69eb58f14"),
-                            Name = "Blu-ray"
-                        },
-                        new
-                        {
-                            Id = new Guid("e164e57a-9d08-4d94-abc0-790e75943ba6"),
-                            Name = "VHS"
-                        },
-                        new
-                        {
-                            Id = new Guid("29ce0f37-d821-4afa-9637-e4dedacf79d6"),
-                            Name = "PC"
-                        },
-                        new
-                        {
-                            Id = new Guid("1f07c38f-5600-457c-a64f-8bbaf9b216c5"),
-                            Name = "PlayStation"
-                        },
-                        new
-                        {
-                            Id = new Guid("3ae26458-596b-43dd-a37a-5088ec4921d9"),
-                            Name = "Xbox"
-                        });
-                });
-
-            modelBuilder.Entity("ASMC6P.Shared.Entities.ProductVariantEntity", b =>
-                {
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ProductTypeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal>("OriginalPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<bool>("Visible")
-                        .HasColumnType("bit");
-
-                    b.HasKey("ProductId", "ProductTypeId");
-
-                    b.HasIndex("ProductTypeId");
-
-                    b.ToTable("ProductVariants");
-
-                    b.HasData(
-                        new
-                        {
-                            ProductId = new Guid("8f6f4d09-4292-48cc-a8bf-76e7fe0bb961"),
-                            ProductTypeId = new Guid("73f168d0-0faa-4005-a0fb-ff875ef8fbd9"),
-                            Deleted = false,
-                            OriginalPrice = 19.99m,
-                            Price = 9.99m,
-                            Visible = true
-                        },
-                        new
-                        {
-                            ProductId = new Guid("8f6f4d09-4292-48cc-a8bf-76e7fe0bb961"),
-                            ProductTypeId = new Guid("59178d1e-9a24-4ca7-90c1-ddd4c9d8dd37"),
-                            Deleted = false,
-                            OriginalPrice = 0m,
-                            Price = 7.99m,
-                            Visible = true
-                        },
-                        new
-                        {
-                            ProductId = new Guid("8f6f4d09-4292-48cc-a8bf-76e7fe0bb961"),
-                            ProductTypeId = new Guid("e164e57a-9d08-4d94-abc0-790e75943ba6"),
-                            Deleted = false,
-                            OriginalPrice = 29.99m,
-                            Price = 19.99m,
-                            Visible = true
-                        },
-                        new
-                        {
-                            ProductId = new Guid("e1cee7b3-a6ae-4ae3-bcf4-1955129d8197"),
-                            ProductTypeId = new Guid("73f168d0-0faa-4005-a0fb-ff875ef8fbd9"),
-                            Deleted = false,
-                            OriginalPrice = 14.99m,
-                            Price = 7.99m,
-                            Visible = true
-                        },
-                        new
-                        {
-                            ProductId = new Guid("772bc058-2e46-4d3f-ac02-3dd4a6a5aced"),
-                            ProductTypeId = new Guid("73f168d0-0faa-4005-a0fb-ff875ef8fbd9"),
-                            Deleted = false,
-                            OriginalPrice = 0m,
-                            Price = 6.99m,
-                            Visible = true
-                        },
-                        new
-                        {
-                            ProductId = new Guid("71b5e16d-7c46-41b8-9b5a-cb00376c4b60"),
-                            ProductTypeId = new Guid("0e576d72-004c-47dc-a778-b1e9579d4893"),
-                            Deleted = false,
-                            OriginalPrice = 0m,
-                            Price = 3.99m,
-                            Visible = true
-                        },
-                        new
-                        {
-                            ProductId = new Guid("71b5e16d-7c46-41b8-9b5a-cb00376c4b60"),
-                            ProductTypeId = new Guid("ceb89799-0d43-4311-8ed6-65e69eb58f14"),
-                            Deleted = false,
-                            OriginalPrice = 0m,
-                            Price = 9.99m,
-                            Visible = true
-                        },
-                        new
-                        {
-                            ProductId = new Guid("71b5e16d-7c46-41b8-9b5a-cb00376c4b60"),
-                            ProductTypeId = new Guid("4c42d2c7-24ee-4e11-8dcf-b44c6d8b2e90"),
-                            Deleted = false,
-                            OriginalPrice = 0m,
-                            Price = 19.99m,
-                            Visible = true
-                        },
-                        new
-                        {
-                            ProductId = new Guid("0e7f6b60-6e98-4220-93ea-45f64e0f1aa2"),
-                            ProductTypeId = new Guid("0e576d72-004c-47dc-a778-b1e9579d4893"),
-                            Deleted = false,
-                            OriginalPrice = 0m,
-                            Price = 3.99m,
-                            Visible = true
-                        },
-                        new
-                        {
-                            ProductId = new Guid("913f130b-c1b6-4a98-8d63-4cf316da3fc1"),
-                            ProductTypeId = new Guid("0e576d72-004c-47dc-a778-b1e9579d4893"),
-                            Deleted = false,
-                            OriginalPrice = 0m,
-                            Price = 2.99m,
-                            Visible = true
-                        },
-                        new
-                        {
-                            ProductId = new Guid("453f44f7-e33e-4477-a2ad-a78e232db482"),
-                            ProductTypeId = new Guid("29ce0f37-d821-4afa-9637-e4dedacf79d6"),
-                            Deleted = false,
-                            OriginalPrice = 29.99m,
-                            Price = 19.99m,
-                            Visible = true
-                        },
-                        new
-                        {
-                            ProductId = new Guid("453f44f7-e33e-4477-a2ad-a78e232db482"),
-                            ProductTypeId = new Guid("1f07c38f-5600-457c-a64f-8bbaf9b216c5"),
-                            Deleted = false,
-                            OriginalPrice = 0m,
-                            Price = 69.99m,
-                            Visible = true
-                        },
-                        new
-                        {
-                            ProductId = new Guid("453f44f7-e33e-4477-a2ad-a78e232db482"),
-                            ProductTypeId = new Guid("3ae26458-596b-43dd-a37a-5088ec4921d9"),
-                            Deleted = false,
-                            OriginalPrice = 59.99m,
-                            Price = 49.99m,
-                            Visible = true
-                        },
-                        new
-                        {
-                            ProductId = new Guid("5cda1ac6-7e1f-4f28-84e9-319455fc7016"),
-                            ProductTypeId = new Guid("29ce0f37-d821-4afa-9637-e4dedacf79d6"),
-                            Deleted = false,
-                            OriginalPrice = 24.99m,
-                            Price = 9.99m,
-                            Visible = true
-                        },
-                        new
-                        {
-                            ProductId = new Guid("26429623-f8b1-49de-85a3-57e2c370afcb"),
-                            ProductTypeId = new Guid("29ce0f37-d821-4afa-9637-e4dedacf79d6"),
-                            Deleted = false,
-                            OriginalPrice = 0m,
-                            Price = 14.99m,
-                            Visible = true
-                        },
-                        new
-                        {
-                            ProductId = new Guid("ff619bfc-5866-4a5b-9a95-9a8a0e457c91"),
-                            ProductTypeId = new Guid("4284009c-0956-492e-ba3f-b6b0deed917c"),
-                            Deleted = false,
-                            OriginalPrice = 299m,
-                            Price = 159.99m,
-                            Visible = true
-                        },
-                        new
-                        {
-                            ProductId = new Guid("285a8637-e594-4729-b408-67819bb3e3e9"),
-                            ProductTypeId = new Guid("4284009c-0956-492e-ba3f-b6b0deed917c"),
-                            Deleted = false,
-                            OriginalPrice = 399m,
-                            Price = 79.99m,
-                            Visible = true
+                            Image = "https://upload.wikimedia.org/wikipedia/commons/e/ee/Nintendo-Super-Famicom-Set-FL.jpg",
+                            IsDeleted = false,
+                            Name = "Super Nintendo Entertainment System",
+                            NewPrice = 123m,
+                            OriginalPrice = 345m,
+                            Quantity = 1,
+                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1691)
                         });
                 });
 
@@ -627,21 +396,21 @@ namespace ASMC6P.Server.Migrations
                         new
                         {
                             Id = new Guid("ab251560-a455-40fd-adfd-54f9e150f874"),
-                            ConcurrencyStamp = "fd60698f-38fb-466b-be66-0fd265129008",
+                            ConcurrencyStamp = "c5b4a12a-fc9c-4da2-b403-033ff838241a",
                             Name = "Administrator",
                             NormalizedName = "Administrator"
                         },
                         new
                         {
                             Id = new Guid("8d4b836e-d9fa-4fa9-88c0-9a875d2b7d5c"),
-                            ConcurrencyStamp = "ce041b7b-41fe-4312-a700-d38426fa3747",
+                            ConcurrencyStamp = "6af14afb-4af8-434c-a046-e298225cf464",
                             Name = "Employee",
                             NormalizedName = "Employee"
                         },
                         new
                         {
                             Id = new Guid("f91ec0e5-d768-42e2-8926-de7d3162430f"),
-                            ConcurrencyStamp = "866dd8d4-b9d7-4337-bcb8-780ced8d0ba8",
+                            ConcurrencyStamp = "e0f7a744-07c6-46da-a5a8-e2d12d01498a",
                             Name = "Customer",
                             NormalizedName = "Customer"
                         });
@@ -737,7 +506,7 @@ namespace ASMC6P.Server.Migrations
                             Id = new Guid("fb1eab16-920e-4480-b3ee-01f6e9c15ab5"),
                             AccessFailedCount = 0,
                             Address = "Tuân Chính -Vĩnh Tường - Vĩnh Phúc",
-                            ConcurrencyStamp = "e8aa5851-a7b6-47f6-ab38-be2f34de2c6c",
+                            ConcurrencyStamp = "5d051028-40fa-410d-96dc-24bbcb8fc24d",
                             Decriptions = "",
                             DisplayName = "Bậu",
                             Email = "vankieu0409@gmail.com",
@@ -751,7 +520,7 @@ namespace ASMC6P.Server.Migrations
                             PasswordHash = "AQAAAAEAACcQAAAAEMfrd51YGMSLzKs7NWUztJV/CKxRqpABxKVBI7+iwpeD82bZA8aBCnr7kKusapiDQw==",
                             PhoneNumber = "",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "51d43e68-803d-4d2c-b609-0f784046d4ee",
+                            SecurityStamp = "4da3a084-b8a7-4d18-b87f-064ce9f0f4e0",
                             TwoFactorEnabled = false,
                             UserName = "vankieu0409@gmail.com"
                         },
@@ -760,7 +529,7 @@ namespace ASMC6P.Server.Migrations
                             Id = new Guid("6aa93c41-f21f-44e3-8f46-7d76b03574c5"),
                             AccessFailedCount = 0,
                             Address = "Tuân Chính -Vĩnh Tường - Vĩnh Phúc",
-                            ConcurrencyStamp = "cbaf596a-8653-4125-9796-61017afa8992",
+                            ConcurrencyStamp = "d9576a22-2bfd-4476-af92-bf27ac78cf00",
                             Decriptions = " Chị rất nóng tính",
                             DisplayName = "Chị Nhà Cục Súc",
                             Email = "kieunvph14806@fpt.edu.vn",
@@ -774,7 +543,7 @@ namespace ASMC6P.Server.Migrations
                             PasswordHash = "AQAAAAEAACcQAAAAEMfrd51YGMSLzKs7NWUztJV/CKxRqpABxKVBI7+iwpeD82bZA8aBCnr7kKusapiDQw==",
                             PhoneNumber = "",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "31c85c7d-3471-4f59-8f58-90a7c2eae62e",
+                            SecurityStamp = "4d4b468f-cbb9-4896-b393-887a94c30790",
                             TwoFactorEnabled = false,
                             UserName = "kieunvph14806@fpt.edu.vn"
                         });
@@ -900,13 +669,6 @@ namespace ASMC6P.Server.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ASMC6P.Shared.Entities.ImageEntity", b =>
-                {
-                    b.HasOne("ASMC6P.Shared.Entities.ProductEntity", null)
-                        .WithMany("Images")
-                        .HasForeignKey("ProductEntityId");
-                });
-
             modelBuilder.Entity("ASMC6P.Shared.Entities.OrderItemEntity", b =>
                 {
                     b.HasOne("ASMC6P.Shared.Entities.OrderEntity", "Order")
@@ -921,17 +683,9 @@ namespace ASMC6P.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ASMC6P.Shared.Entities.ProductTypeEntity", "ProductType")
-                        .WithMany()
-                        .HasForeignKey("ProductTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Order");
 
                     b.Navigation("Product");
-
-                    b.Navigation("ProductType");
                 });
 
             modelBuilder.Entity("ASMC6P.Shared.Entities.ProductEntity", b =>
@@ -943,25 +697,6 @@ namespace ASMC6P.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("ASMC6P.Shared.Entities.ProductVariantEntity", b =>
-                {
-                    b.HasOne("ASMC6P.Shared.Entities.ProductEntity", "Product")
-                        .WithMany("Variants")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ASMC6P.Shared.Entities.ProductTypeEntity", "ProductType")
-                        .WithMany()
-                        .HasForeignKey("ProductTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-
-                    b.Navigation("ProductType");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -1018,13 +753,6 @@ namespace ASMC6P.Server.Migrations
             modelBuilder.Entity("ASMC6P.Shared.Entities.OrderEntity", b =>
                 {
                     b.Navigation("OrderItems");
-                });
-
-            modelBuilder.Entity("ASMC6P.Shared.Entities.ProductEntity", b =>
-                {
-                    b.Navigation("Images");
-
-                    b.Navigation("Variants");
                 });
 #pragma warning restore 612, 618
         }

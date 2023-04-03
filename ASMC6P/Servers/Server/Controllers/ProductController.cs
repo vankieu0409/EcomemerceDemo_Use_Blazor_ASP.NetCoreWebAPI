@@ -4,6 +4,8 @@ using ASMC6P.Shared.Entities;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Formatter;
+using Microsoft.AspNetCore.OData.Query;
 
 namespace BlazorEcommerce.Server.Controllers
 {
@@ -19,73 +21,78 @@ namespace BlazorEcommerce.Server.Controllers
         }
 
         [HttpGet("admin"), Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ServiceResponse<List<ProductEntity>>>> GetAdminProducts()
+        public async Task<ActionResult<List<ProductEntity>>> GetAdminProducts(ODataQueryOptions<ProductEntity> queryOptions)
         {
             var result = await _productService.GetAdminProducts();
-            return Ok(result);
+            var castedResult = queryOptions.ApplyTo(result.AsQueryable()).Cast<ProductEntity>();
+            return Ok(castedResult);
         }
 
         [HttpPost, Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ServiceResponse<ProductEntity>>> CreateProduct(ProductEntity product)
+        public async Task<ActionResult<ProductEntity>> CreateProduct(ProductEntity product)
         {
             var result = await _productService.CreateProduct(product);
             return Ok(result);
         }
 
         [HttpPut, Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ServiceResponse<ProductEntity>>> UpdateProduct(ProductEntity product)
+        public async Task<ActionResult<ProductEntity>> UpdateProduct(ProductEntity product)
         {
             var result = await _productService.UpdateProduct(product);
             return Ok(result);
         }
 
         [HttpDelete("{id}"), Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ServiceResponse<bool>>> DeleteProduct(Guid id)
+        public async Task<ActionResult<bool>> DeleteProduct(Guid id)
         {
             var result = await _productService.DeleteProduct(id);
             return Ok(result);
         }
 
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<List<ProductEntity>>>> GetProducts()
+        public async Task<ActionResult<List<ProductEntity>>> GetProducts(ODataQueryOptions<ProductEntity> queryOptions)
         {
             var result = await _productService.GetProductsAsync();
-            return Ok(result);
+            var castedResult = queryOptions.ApplyTo(result.AsQueryable()).Cast<ProductEntity>();
+            return Ok(castedResult);
         }
 
         [HttpGet("{productId}")]
-        public async Task<ActionResult<ServiceResponse<ProductEntity>>> GetProduct(Guid productId)
+        public async Task<ActionResult<ProductEntity>> GetProduct(Guid productId)
         {
             var result = await _productService.GetProductAsync(productId);
             return Ok(result);
         }
 
         [HttpGet("category/{categoryUrl}")]
-        public async Task<ActionResult<ServiceResponse<List<ProductEntity>>>> GetProductsByCategory(string categoryUrl)
+        public async Task<ActionResult<List<ProductEntity>>> GetProductsByCategory(string categoryUrl)
         {
             var result = await _productService.GetProductsByCategory(categoryUrl);
             return Ok(result);
         }
 
-        [HttpGet("search/{searchText}/{page}")]
-        public async Task<ActionResult<ServiceResponse<ProductSearchResult>>> SearchProducts(string searchText, int page = 1)
+        [HttpGet("search/{searchText}")]
+        public async Task<ActionResult<ProductSearchResult>> SearchProducts([FromODataUri] string searchText, ODataQueryOptions<string> queryOptions)
         {
-            var result = await _productService.SearchProducts(searchText, page);
+            var result = await _productService.SearchProducts(searchText);
             return Ok(result);
         }
 
         [HttpGet("searchsuggestions/{searchText}")]
-        public async Task<ActionResult<ServiceResponse<List<ProductEntity>>>> GetProductSearchSuggestions(string searchText)
+
+        public async Task<ActionResult<List<ProductEntity>>> GetProductSearchSuggestions([FromODataUri] string searchText, ODataQueryOptions<string> queryOptions)
         {
             var result = await _productService.GetProductSearchSuggestions(searchText);
-            return Ok(result);
+            var castedResult = queryOptions.ApplyTo(result.AsQueryable()).Cast<string>();
+            return Ok(castedResult);
         }
 
         [HttpGet("featured")]
-        public async Task<ActionResult<ServiceResponse<List<ProductEntity>>>> GetFeaturedProducts()
+        public async Task<ActionResult<List<ProductEntity>>> GetFeaturedProducts(ODataQueryOptions<ProductEntity> queryOptions)
         {
             var result = await _productService.GetFeaturedProducts();
-            return Ok(result);
+            var castedResult = queryOptions.ApplyTo(result.AsQueryable()).Cast<ProductEntity>();
+            return Ok(castedResult);
         }
     }
 }

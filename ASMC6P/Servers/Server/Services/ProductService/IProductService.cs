@@ -5,16 +5,16 @@ namespace ASMC6P.Server.Services.ProductService
 {
     public interface IProductService
     {
-        Task<ServiceResponse<List<ProductEntity>>> GetProductsAsync();
-        Task<ServiceResponse<ProductEntity>> GetProductAsync(Guid productId);
-        Task<ServiceResponse<List<ProductEntity>>> GetProductsByCategory(string categoryUrl);
-        Task<ServiceResponse<ProductSearchResult>> SearchProducts(string searchText, int page);
-        Task<ServiceResponse<List<string>>> GetProductSearchSuggestions(string searchText);
-        Task<ServiceResponse<List<ProductEntity>>> GetFeaturedProducts();
-        Task<ServiceResponse<List<ProductEntity>>> GetAdminProducts();
-        Task<ServiceResponse<ProductEntity>> CreateProduct(ProductEntity product);
-        Task<ServiceResponse<ProductEntity>> UpdateProduct(ProductEntity product);
-        Task<ServiceResponse<bool>> DeleteProduct(Guid productId);
+        Task<List<ProductEntity>> GetProductsAsync();
+        Task<ProductEntity> GetProductAsync(Guid productId);
+        Task<List<ProductEntity>> GetProductsByCategory(string categoryUrl);
+        Task<ProductSearchResult> SearchProducts(string searchText);
+        Task<List<string>> GetProductSearchSuggestions(string searchText);
+        Task<List<ProductEntity>> GetFeaturedProducts();
+        Task<List<ProductEntity>> GetAdminProducts();
+        Task<ProductEntity> CreateProduct(ProductEntity product);
+        Task<ProductEntity> UpdateProduct(ProductEntity product);
+        Task<bool> DeleteProduct(Guid productId);
 
     }
 }

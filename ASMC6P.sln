@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASMC6P.Server", "ASMC6P\Servers\Server\ASMC6P.Server.csproj", "{220775F8-ECD3-488F-AE89-68975EE589EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASMC6P.Server", "ASMC6P\Servers\Server\ASMC6P.Server.csproj", "{220775F8-ECD3-488F-AE89-68975EE589EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASMC6P.Client", "ASMC6P\Clients\Client\ASMC6P.Client.csproj", "{C175AEA0-D2EB-4CAB-95B2-599F4FBC4283}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASMC6P.Client", "ASMC6P\Clients\Client\ASMC6P.Client.csproj", "{C175AEA0-D2EB-4CAB-95B2-599F4FBC4283}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASMC6P.Shared", "ASMC6P\Shared\ASMC6P.Shared.csproj", "{3C24536F-D0CD-4D66-B1CF-878D6DE6255C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASMC6P.Shared", "ASMC6P\Shared\ASMC6P.Shared.csproj", "{3C24536F-D0CD-4D66-B1CF-878D6DE6255C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

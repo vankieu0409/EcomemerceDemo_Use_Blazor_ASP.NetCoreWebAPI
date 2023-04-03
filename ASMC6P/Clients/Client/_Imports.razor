@@ -8,6 +8,10 @@
 @using Microsoft.JSInterop
 @using ASMC6P.Client
 @using ASMC6P.Client.Services.Authentications
+@using ASMC6P.Client.Services.CartService
+@using ASMC6P.Client.Services.CategoryService
+@using ASMC6P.Client.Services.OrderService
+@using ASMC6P.Client.Services.ProductService
 @using ASMC6P.Client.Shared
 @using Blazored.LocalStorage
 @using Microsoft.AspNetCore.Authorization
@@ -21,4 +25,8 @@
 @inject IJSRuntime _jsRuntime;
 @inject AuthenticationStateProvider _authenticationStateProvider
 @inject IAuthenticationService _authentication;
+@inject ICartService _cartService;
+@inject IProductService _productService;
+@inject IOrderService _orderService;
+@inject ICategoryService _categoryService;
 

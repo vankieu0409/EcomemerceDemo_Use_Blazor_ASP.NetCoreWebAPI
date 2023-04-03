@@ -73,6 +73,11 @@ public class AuthenticationService : IAuthenticationService
         return result;
     }
 
+    public async Task<bool> IsUserAuthenticated()
+    {
+        return (await _authStateProvider.GetAuthenticationStateAsync()).User.Identity.IsAuthenticated;
+    }
+
     public async Task<bool> LogoutService()
     {
         var results = await _httpClient.GetStringAsync("Logout");

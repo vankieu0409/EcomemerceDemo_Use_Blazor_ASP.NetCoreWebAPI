@@ -17,14 +17,14 @@ namespace BlazorEcommerce.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<List<OrderOverviewDto>>>> GetOrders()
+        public async Task<ActionResult<List<OrderOverviewDto>>> GetOrders()
         {
             var result = await _orderService.GetOrders();
             return Ok(result);
         }
 
         [HttpGet("{orderId}")]
-        public async Task<ActionResult<ServiceResponse<OrderDetailsDto>>> GetOrdersDetails(Guid orderId)
+        public async Task<ActionResult<OrderDetailsDto>> GetOrdersDetails(Guid orderId)
         {
             var result = await _orderService.GetOrderDetails(orderId);
             return Ok(result);

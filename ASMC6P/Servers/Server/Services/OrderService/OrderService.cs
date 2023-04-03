@@ -17,31 +17,27 @@ namespace ASMC6P.Server.Services.OrderService
         private Guid userId;
 
 
-        public OrderService(IOrdersRepository ordersRepository, ICartService cartService, ICartRepository cartRepository, IHttpContextAccessor httpContextAccessor, Guid userId)
+        public OrderService(IOrdersRepository ordersRepository, ICartService cartService, ICartRepository cartRepository, IHttpContextAccessor httpContextAccessor)
         {
             _ordersRepository = ordersRepository;
             _cartService = cartService;
             _cartRepository = cartRepository;
             _httpContextAccessor = httpContextAccessor;
-            this.userId = userId;
         }
 
-        public async Task<ServiceResponse<OrderDetailsDto>> GetOrderDetails(Guid orderId)
+        public async Task<OrderDetailsDto> GetOrderDetails(Guid orderId)
         {
-            var response = new ServiceResponse<OrderDetailsDto>();
+            var response = new OrderDetailsDto();
             var order = await _ordersRepository.AsQueryable()
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Product)
                 .Include(o => o.OrderItems)
-                .ThenInclude(oi => oi.ProductType)
                 .Where(o => o.UserId == userId && o.Id == orderId)
                 .OrderByDescending(o => o.OrderDate)
                 .FirstOrDefaultAsync();
 
             if (order == null)
             {
-                response.Success = false;
-                response.Message = "Order not found.";
                 return response;
             }
 
@@ -56,21 +52,20 @@ namespace ASMC6P.Server.Services.OrderService
             orderDetailsResponse.Products.Add(new OrderDetailsProductDto
             {
                 ProductId = item.ProductId,
-                ImageUrl = item.Product.ImageUrl,
-                ProductType = item.ProductType.Name,
+                ImageUrl = item.Product.Image,
                 Quantity = item.Quantity,
-                Title = item.Product.Title,
+                Title = item.Product.Name,
                 TotalPrice = item.TotalPrice
             }));
 
-            response.Data = orderDetailsResponse;
+            response = orderDetailsResponse;
 
             return response;
         }
 
-        public async Task<ServiceResponse<List<OrderOverviewDto>>> GetOrders()
+        public async Task<List<OrderOverviewDto>> GetOrders()
         {
-            var response = new ServiceResponse<List<OrderOverviewDto>>();
+            var response = new List<OrderOverviewDto>();
             var orders = await _ordersRepository.AsQueryable()
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Product)
@@ -85,20 +80,20 @@ namespace ASMC6P.Server.Services.OrderService
                 OrderDate = o.OrderDate,
                 TotalPrice = o.TotalPrice,
                 Product = o.OrderItems.Count > 1 ?
-                    $"{o.OrderItems.First().Product.Title} and" +
+                    $"{o.OrderItems.First().Product.Name} and" +
                     $" {o.OrderItems.Count - 1} more..." :
-                    o.OrderItems.First().Product.Title,
-                ProductImageUrl = o.OrderItems.First().Product.ImageUrl
+                    o.OrderItems.First().Product.Name,
+                ProductImageUrl = o.OrderItems.First().Product.Image
             }));
 
-            response.Data = orderResponse;
+            response = orderResponse;
 
             return response;
         }
 
-        public async Task<ServiceResponse<bool>> PlaceOrder()
+        public async Task<bool> PlaceOrder()
         {
-            var products = (await _cartService.GetDbCartProducts()).Data;
+            var products = (await _cartService.GetDbCartProducts());
             decimal totalPrice = 0;
             products.ForEach(product => totalPrice += product.Price * product.Quantity);
 
@@ -106,7 +101,6 @@ namespace ASMC6P.Server.Services.OrderService
             products.ForEach(product => orderItems.Add(new OrderItemEntity
             {
                 ProductId = product.ProductId,
-                ProductTypeId = product.ProductTypeId,
                 Quantity = product.Quantity,
                 TotalPrice = product.Price * product.Quantity
             }));
@@ -126,7 +120,7 @@ namespace ASMC6P.Server.Services.OrderService
 
             await _cartRepository.SaveChangesAsync();
 
-            return new ServiceResponse<bool> { Data = true };
+            return true;
         }
     }
 }

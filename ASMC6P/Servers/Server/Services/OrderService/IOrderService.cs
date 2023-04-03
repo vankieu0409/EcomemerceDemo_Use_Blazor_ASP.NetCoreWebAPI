@@ -4,8 +4,8 @@ namespace ASMC6P.Server.Services.OrderService
 {
     public interface IOrderService
     {
-        Task<ServiceResponse<bool>> PlaceOrder();
-        Task<ServiceResponse<List<OrderOverviewDto>>> GetOrders();
-        Task<ServiceResponse<OrderDetailsDto>> GetOrderDetails(Guid orderId);
+        Task<bool> PlaceOrder();
+        Task<List<OrderOverviewDto>> GetOrders();
+        Task<OrderDetailsDto> GetOrderDetails(Guid orderId);
     }
 }
