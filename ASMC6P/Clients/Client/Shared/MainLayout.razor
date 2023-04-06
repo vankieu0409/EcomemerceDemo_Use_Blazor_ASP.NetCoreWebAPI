@@ -9,11 +9,11 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 <MudLayout>
-
     <MudAppBar Elevation="24" Color="Color.Primary">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <AuthorizeView>
             <Authorized>
-                <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+               
                 <MudSpacer />
                 <MudExpansionPanels>
                     <MudMenu>
@@ -37,13 +37,9 @@
                              Icon="@Icons.Material.Outlined.LightMode" Color="@Color.Inherit" Title="Default"
                              ToggledIcon="@Icons.Material.Outlined.DarkMode" ToggledColor="@Color.Dark" ToggledTitle="Dark" Edge="Edge.End" />
     </MudAppBar>
-    <AuthorizeView>
-        <Authorized>
-            <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Never" Breakpoint="Breakpoint.Sm" Elevation="24" Variant="@DrawerVariant.Mini" OpenMiniOnHover="false">
-                <NavMenu />
-            </MudDrawer>
-        </Authorized>
-    </AuthorizeView>
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Never" Breakpoint="Breakpoint.Sm" Elevation="24" Variant="@DrawerVariant.Persistent" OpenMiniOnHover="false">
+        <NavMenuCategory/>
+    </MudDrawer>
     <MudMainContent>
         <MudContainer>
             @Body
@@ -52,8 +48,7 @@
 </MudLayout>
 @code {
     UserDto userDto = new UserDto();
-
-    bool _drawerOpen = false;
+    bool _drawerOpen = true;
     private bool _isDarkMode = false;
     private MudThemeProvider _mudThemeProvider;
 
@@ -83,7 +78,10 @@
     {
         _drawerOpen = !_drawerOpen;
     }
-
+    void ToggleRightDrawer()
+    {
+        
+    }
     private async Task BeginSignOut(MouseEventArgs args)
     {
         var checkLogout = await _authentication.LogoutService();

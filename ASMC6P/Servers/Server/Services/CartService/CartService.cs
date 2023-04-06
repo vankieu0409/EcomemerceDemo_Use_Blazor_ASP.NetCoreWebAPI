@@ -81,8 +81,7 @@ namespace ASMC6P.Server.Services.CartService
             cartItem.UserId = userId;
 
             var sameItem = await _cartRepository.AsQueryable()
-                .FirstOrDefaultAsync(ci => ci.ProductId == cartItem.ProductId &&
-                ci.ProductTypeId == cartItem.ProductTypeId && ci.UserId == cartItem.UserId);
+                .FirstOrDefaultAsync(ci => ci.ProductId == cartItem.ProductId && ci.UserId == cartItem.UserId);
             if (sameItem == null)
             {
                 await _cartRepository.AddAsync(cartItem);
@@ -100,8 +99,7 @@ namespace ASMC6P.Server.Services.CartService
         public async Task<bool> UpdateQuantity(CartItemEntity cartItem)
         {
             var dbCartItem = await _cartRepository.AsQueryable()
-                .FirstOrDefaultAsync(ci => ci.ProductId == cartItem.ProductId &&
-                ci.ProductTypeId == cartItem.ProductTypeId && ci.UserId == userId);
+                .FirstOrDefaultAsync(ci => ci.ProductId == cartItem.ProductId && ci.UserId == userId);
             if (dbCartItem == null)
             {
                 return false;
@@ -116,8 +114,7 @@ namespace ASMC6P.Server.Services.CartService
         public async Task<bool> RemoveItemFromCart(Guid productId, Guid productTypeId)
         {
             var dbCartItem = await _cartRepository.AsQueryable()
-                .FirstOrDefaultAsync(ci => ci.ProductId == productId &&
-                ci.ProductTypeId == productTypeId && ci.UserId == userId);
+                .FirstOrDefaultAsync(ci => ci.ProductId == productId && ci.UserId == userId);
             if (dbCartItem == null)
             {
                 return false;

@@ -30,13 +30,10 @@ namespace ASMC6P.Server.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ProductTypeId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("UserId", "ProductId", "ProductTypeId");
+                    b.HasKey("UserId", "ProductId");
 
                     b.ToTable("CartItems");
                 });
@@ -202,7 +199,7 @@ namespace ASMC6P.Server.Migrations
                             NewPrice = 123m,
                             OriginalPrice = 345m,
                             Quantity = 1,
-                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1638)
+                            UploadedDate = new DateTime(2023, 4, 6, 22, 46, 25, 774, DateTimeKind.Local).AddTicks(5003)
                         },
                         new
                         {
@@ -215,7 +212,7 @@ namespace ASMC6P.Server.Migrations
                             NewPrice = 123m,
                             OriginalPrice = 345m,
                             Quantity = 1,
-                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1659)
+                            UploadedDate = new DateTime(2023, 4, 6, 22, 46, 25, 774, DateTimeKind.Local).AddTicks(5022)
                         },
                         new
                         {
@@ -228,7 +225,7 @@ namespace ASMC6P.Server.Migrations
                             NewPrice = 123m,
                             OriginalPrice = 345m,
                             Quantity = 1,
-                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1662)
+                            UploadedDate = new DateTime(2023, 4, 6, 22, 46, 25, 774, DateTimeKind.Local).AddTicks(5026)
                         },
                         new
                         {
@@ -241,7 +238,7 @@ namespace ASMC6P.Server.Migrations
                             NewPrice = 123m,
                             OriginalPrice = 345m,
                             Quantity = 1,
-                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1666)
+                            UploadedDate = new DateTime(2023, 4, 6, 22, 46, 25, 774, DateTimeKind.Local).AddTicks(5031)
                         },
                         new
                         {
@@ -254,7 +251,7 @@ namespace ASMC6P.Server.Migrations
                             NewPrice = 123m,
                             OriginalPrice = 345m,
                             Quantity = 1,
-                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1670)
+                            UploadedDate = new DateTime(2023, 4, 6, 22, 46, 25, 774, DateTimeKind.Local).AddTicks(5036)
                         },
                         new
                         {
@@ -267,7 +264,7 @@ namespace ASMC6P.Server.Migrations
                             NewPrice = 123m,
                             OriginalPrice = 345m,
                             Quantity = 1,
-                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1673)
+                            UploadedDate = new DateTime(2023, 4, 6, 22, 46, 25, 774, DateTimeKind.Local).AddTicks(5041)
                         },
                         new
                         {
@@ -280,7 +277,7 @@ namespace ASMC6P.Server.Migrations
                             NewPrice = 123m,
                             OriginalPrice = 345m,
                             Quantity = 1,
-                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1676)
+                            UploadedDate = new DateTime(2023, 4, 6, 22, 46, 25, 774, DateTimeKind.Local).AddTicks(5045)
                         },
                         new
                         {
@@ -293,7 +290,7 @@ namespace ASMC6P.Server.Migrations
                             NewPrice = 123m,
                             OriginalPrice = 345m,
                             Quantity = 1,
-                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1680)
+                            UploadedDate = new DateTime(2023, 4, 6, 22, 46, 25, 774, DateTimeKind.Local).AddTicks(5049)
                         },
                         new
                         {
@@ -306,7 +303,7 @@ namespace ASMC6P.Server.Migrations
                             NewPrice = 123m,
                             OriginalPrice = 345m,
                             Quantity = 1,
-                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1684)
+                            UploadedDate = new DateTime(2023, 4, 6, 22, 46, 25, 774, DateTimeKind.Local).AddTicks(5053)
                         },
                         new
                         {
@@ -319,7 +316,7 @@ namespace ASMC6P.Server.Migrations
                             NewPrice = 123m,
                             OriginalPrice = 345m,
                             Quantity = 1,
-                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1688)
+                            UploadedDate = new DateTime(2023, 4, 6, 22, 46, 25, 774, DateTimeKind.Local).AddTicks(5056)
                         },
                         new
                         {
@@ -332,7 +329,7 @@ namespace ASMC6P.Server.Migrations
                             NewPrice = 123m,
                             OriginalPrice = 345m,
                             Quantity = 1,
-                            UploadedDate = new DateTime(2023, 4, 3, 15, 14, 7, 935, DateTimeKind.Local).AddTicks(1691)
+                            UploadedDate = new DateTime(2023, 4, 6, 22, 46, 25, 774, DateTimeKind.Local).AddTicks(5060)
                         });
                 });
 
@@ -394,21 +391,21 @@ namespace ASMC6P.Server.Migrations
                         new
                         {
                             Id = new Guid("ab251560-a455-40fd-adfd-54f9e150f874"),
-                            ConcurrencyStamp = "c5b4a12a-fc9c-4da2-b403-033ff838241a",
+                            ConcurrencyStamp = "8bcc8b75-c547-4736-9c12-7d6e40127eef",
                             Name = "Administrator",
                             NormalizedName = "Administrator"
                         },
                         new
                         {
                             Id = new Guid("8d4b836e-d9fa-4fa9-88c0-9a875d2b7d5c"),
-                            ConcurrencyStamp = "6af14afb-4af8-434c-a046-e298225cf464",
+                            ConcurrencyStamp = "859deee4-e8d3-417c-a27d-d1723f9b8960",
                             Name = "Employee",
                             NormalizedName = "Employee"
                         },
                         new
                         {
                             Id = new Guid("f91ec0e5-d768-42e2-8926-de7d3162430f"),
-                            ConcurrencyStamp = "e0f7a744-07c6-46da-a5a8-e2d12d01498a",
+                            ConcurrencyStamp = "6976fea4-c67e-423b-bf41-c2f5e8790ed3",
                             Name = "Customer",
                             NormalizedName = "Customer"
                         });
@@ -504,7 +501,7 @@ namespace ASMC6P.Server.Migrations
                             Id = new Guid("fb1eab16-920e-4480-b3ee-01f6e9c15ab5"),
                             AccessFailedCount = 0,
                             Address = "Tuân Chính -Vĩnh Tường - Vĩnh Phúc",
-                            ConcurrencyStamp = "5d051028-40fa-410d-96dc-24bbcb8fc24d",
+                            ConcurrencyStamp = "b7b6638d-ce6a-4efb-a4bb-28b51d2ee08f",
                             Decriptions = "",
                             DisplayName = "Bậu",
                             Email = "vankieu0409@gmail.com",
@@ -518,7 +515,7 @@ namespace ASMC6P.Server.Migrations
                             PasswordHash = "AQAAAAEAACcQAAAAEMfrd51YGMSLzKs7NWUztJV/CKxRqpABxKVBI7+iwpeD82bZA8aBCnr7kKusapiDQw==",
                             PhoneNumber = "",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "4da3a084-b8a7-4d18-b87f-064ce9f0f4e0",
+                            SecurityStamp = "1722fa12-3a41-48fc-8da2-f6ff094daf0b",
                             TwoFactorEnabled = false,
                             UserName = "vankieu0409@gmail.com"
                         },
@@ -527,7 +524,7 @@ namespace ASMC6P.Server.Migrations
                             Id = new Guid("6aa93c41-f21f-44e3-8f46-7d76b03574c5"),
                             AccessFailedCount = 0,
                             Address = "Tuân Chính -Vĩnh Tường - Vĩnh Phúc",
-                            ConcurrencyStamp = "d9576a22-2bfd-4476-af92-bf27ac78cf00",
+                            ConcurrencyStamp = "ce8dc22b-3c5f-4bcd-a7cd-ef67858c503e",
                             Decriptions = " Chị rất nóng tính",
                             DisplayName = "Chị Nhà Cục Súc",
                             Email = "kieunvph14806@fpt.edu.vn",
@@ -541,7 +538,7 @@ namespace ASMC6P.Server.Migrations
                             PasswordHash = "AQAAAAEAACcQAAAAEMfrd51YGMSLzKs7NWUztJV/CKxRqpABxKVBI7+iwpeD82bZA8aBCnr7kKusapiDQw==",
                             PhoneNumber = "",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "4d4b468f-cbb9-4896-b393-887a94c30790",
+                            SecurityStamp = "653ee3af-192f-4044-84ed-09e9804eb345",
                             TwoFactorEnabled = false,
                             UserName = "kieunvph14806@fpt.edu.vn"
                         });

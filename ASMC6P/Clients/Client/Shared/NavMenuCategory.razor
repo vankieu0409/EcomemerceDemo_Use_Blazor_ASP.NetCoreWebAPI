@@ -1,0 +1,37 @@
+﻿@using ASMC6P.Shared.Entities
+
+<MudNavMenu>
+    <MudDrawerHeader>
+        <div class="col"><MudIcon Icon="@Icons.Material.Filled.Category"></MudIcon></div>
+        <div class="col">
+            <MudText Typo="Typo.h5">Category</MudText>
+        </div>
+        <div class="col"></div>
+    </MudDrawerHeader>
+    <MudDivider DividerType="DividerType.Middle" />
+
+    @foreach (var cate in collectionCategories)
+    {
+        <MudNavLink Href="@cate.Name" Match="NavLinkMatch.Prefix"> @cate.Name</MudNavLink>
+    }
+
+    @* <MudNavLink Href="/" Icon="@Icons.Material.Filled.Dashboard" Match="NavLinkMatch.All"> Dashboard</MudNavLink>
+    <MudNavLink Href="/servers" Icon="@Icons.Material.Filled.Science" Match="NavLinkMatch.Prefix"> Servers</MudNavLink>
+    <MudNavGroup Title="Settings" Icon="@Icons.Material.Filled.Settings" Expanded="true">
+    <MudNavLink Href="/users" Icon="@Icons.Material.Filled.EmojiPeople" Match="NavLinkMatch.Prefix"> Users</MudNavLink>
+    <MudNavLink Href="/security" Icon="@Icons.Material.Filled.Security" Match="NavLinkMatch.Prefix"> Security</MudNavLink>
+    </MudNavGroup>
+    <MudNavLink Href="/about" Icon="@Icons.Material.Sharp.Info" Match="NavLinkMatch.Prefix"> About</MudNavLink>*@
+</MudNavMenu>
+@code
+{
+    List<CategoryEntity> collectionCategories { get; set; } = new List<CategoryEntity>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        collectionCategories = await _categoryService.GetCategories();
+    }
+
+
+
+}

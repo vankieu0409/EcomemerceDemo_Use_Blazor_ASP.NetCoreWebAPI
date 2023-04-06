@@ -37,8 +37,7 @@ namespace ASMC6P.Client.Services.CartService
                     cart = new List<CartItemEntity>();
                 }
 
-                var sameItem = cart.Find(x => x.ProductId == cartItem.ProductId &&
-                    x.ProductTypeId == cartItem.ProductTypeId);
+                var sameItem = cart.Find(x => x.ProductId == cartItem.ProductId);
                 if (sameItem == null)
                 {
                     cart.Add(cartItem);
@@ -105,8 +104,7 @@ namespace ASMC6P.Client.Services.CartService
                     return;
                 }
 
-                var cartItem = cart.Find(x => x.ProductId == productId
-                    && x.ProductTypeId == productTypeId);
+                var cartItem = cart.Find(x => x.ProductId == productId);
                 if (cartItem != null)
                 {
                     cart.Remove(cartItem);
@@ -139,7 +137,6 @@ namespace ASMC6P.Client.Services.CartService
                 {
                     ProductId = product.ProductId,
                     Quantity = product.Quantity,
-                    ProductTypeId = product.ProductTypeId
                 };
                 await _http.PutAsJsonAsync("api/cart/update-quantity", request);
             }
@@ -151,8 +148,7 @@ namespace ASMC6P.Client.Services.CartService
                     return;
                 }
 
-                var cartItem = cart.Find(x => x.ProductId == product.ProductId
-                    && x.ProductTypeId == product.ProductTypeId);
+                var cartItem = cart.Find(x => x.ProductId == product.ProductId);
                 if (cartItem != null)
                 {
                     cartItem.Quantity = product.Quantity;

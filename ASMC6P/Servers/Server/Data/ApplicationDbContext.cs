@@ -43,7 +43,7 @@ public class ApplicationDbContext : IdentityDbContext<UserEntity, RoleEntity, Gu
             entity.HasKey("Id");
         });
         builder.Entity<CartItemEntity>()
-                .HasKey(ci => new { ci.UserId, ci.ProductId, ci.ProductTypeId });
+                .HasKey(ci => new { ci.UserId, ci.ProductId });
 
 
         builder.Entity<OrderItemEntity>()

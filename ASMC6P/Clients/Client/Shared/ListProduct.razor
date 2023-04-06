@@ -1,0 +1,38 @@
+﻿@using ASMC6P.Shared.Entities
+<h3>ListProduct</h3>
+<MudGrid>
+    @foreach (var product in list)
+    {
+        <MudItem xs="12" sm="6" md="4" lg="3" xl="2" >
+            <MudCard>
+                <MudImage Src="@product.Image" Style="height: -webkit-fill-available;width: -webkit-fill-available; margin: 1vi;" />
+                <MudCardContent>
+                    <div class="text-center">
+                        <h4 class="mb-2" Value="@product.Id">@product.Name</h4>
+                        <h5 class="mb-2">$@product.OriginalPrice</h5>
+                         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => AddToCart(product))">
+                            Add to Cart
+                        </MudButton>
+                    </div>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    }
+</MudGrid>
+@code {
+    List<ProductEntity> list { get; set; } = new List<ProductEntity>();
+    protected async override Task OnInitializedAsync()
+    {
+        list= await _productService.GetProducts();
+    }
+  
+    private async Task AddToCart(ProductEntity product)
+    {
+        var cartItem = new CartItemEntity()
+        {
+            ProductId = product.Id
+        };
+
+        await _cartService.AddToCart(cartItem);
+    }
+}

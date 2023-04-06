@@ -36,16 +36,12 @@ namespace ASMC6P.Client.Services.ProductService
             var result = await _http.DeleteAsync($"api/product/{product.Id}");
         }
 
-        public async Task GetAdminProducts()
+        public async Task<List<ProductEntity>> GetAdminProducts()
         {
 
             var result = await _http
                 .GetFromJsonAsync<List<ProductEntity>>($"api/Product/admin");
-            AdminProducts = result;
-            CurrentPage = 1;
-            PageCount = 0;
-            if (AdminProducts.Count == 0)
-                Message = "No products found.";
+            return result;
         }
 
         public async Task<ProductEntity> GetProduct(Guid productId)
@@ -54,23 +50,12 @@ namespace ASMC6P.Client.Services.ProductService
             return result;
         }
 
-        public async Task GetProducts(string? categoryUrl = null)
+        public async Task<List<ProductEntity>> GetProducts(string? categoryUrl = null)
         {
             var result = categoryUrl == null ?
                 await _http.GetFromJsonAsync<List<ProductEntity>>("/api/Product/featured") :
                 await _http.GetFromJsonAsync<List<ProductEntity>>($"api/Product/category/{categoryUrl}");
-            Products = result;
-            if (result != null)
-            {
-                Products = result;
-            }
-            CurrentPage = 1;
-            PageCount = 0;
-
-            if (Products.Count == 0)
-                Message = "No products found";
-
-            ProductsChanged.Invoke();
+            return result;
         }
 
         public async Task<List<string>> GetProductSearchSuggestions(string searchText)

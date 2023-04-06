@@ -51,11 +51,13 @@ namespace ASMC6P.Client.Services.CategoryService
                 AdminCategories = response;
         }
 
-        public async Task GetCategories()
+        public async Task<List<CategoryEntity>> GetCategories()
         {
             var response = await _http.GetFromJsonAsync<List<CategoryEntity>>("api/Category");
             if (response != null)
-                Categories = response;
+                return response;
+
+            return null;
         }
 
         public async Task UpdateCategory(CategoryEntity category)

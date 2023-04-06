@@ -7,7 +7,7 @@ namespace ASMC6P.Client.Services.CategoryService
         event Action OnChange;
         List<CategoryEntity> Categories { get; set; }
         List<CategoryEntity> AdminCategories { get; set; }
-        Task GetCategories();
+        Task<List<CategoryEntity>> GetCategories();
         Task GetAdminCategories();
         Task AddCategory(CategoryEntity category);
         Task UpdateCategory(CategoryEntity category);
