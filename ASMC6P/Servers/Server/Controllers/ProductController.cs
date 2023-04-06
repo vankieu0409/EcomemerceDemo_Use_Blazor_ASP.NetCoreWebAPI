@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.AspNetCore.OData.Query;
 
-namespace BlazorEcommerce.Server.Controllers
+namespace ASMC6P.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
