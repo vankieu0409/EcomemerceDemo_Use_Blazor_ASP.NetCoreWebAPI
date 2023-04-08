@@ -12,7 +12,7 @@
 
     @foreach (var cate in collectionCategories)
     {
-        <MudNavLink Href="@cate.Name" Match="NavLinkMatch.Prefix"> @cate.Name</MudNavLink>
+        <MudNavLink Href="@cate.Url" Match="NavLinkMatch.Prefix"> @cate.Name</MudNavLink>
     }
 
     @* <MudNavLink Href="/" Icon="@Icons.Material.Filled.Dashboard" Match="NavLinkMatch.All"> Dashboard</MudNavLink>
@@ -26,12 +26,17 @@
 @code
 {
     List<CategoryEntity> collectionCategories { get; set; } = new List<CategoryEntity>();
+    List<ProductEntity> collectionProduct { get; set; } = new List<ProductEntity>();
 
     protected async override Task OnInitializedAsync()
     {
         collectionCategories = await _categoryService.GetCategories();
     }
 
-
+    //private async Task GetProductByCategory(string category)
+    //{
+    //    var collection= await _productService.GetProducts(category);
+    //    collectionProduct = collection;
+    //}
 
 }

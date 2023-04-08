@@ -16,16 +16,9 @@
                
                 <MudSpacer />
                 <MudExpansionPanels>
-                    <MudMenu>
-                        <ActivatorContent>
-                            <MudAvatar Color="Color.Warning" Image="@userDto.Image" />
-                        </ActivatorContent>
-                        <ChildContent>
-                            <MudMenuItem Href="user{Id}">Profile</MudMenuItem>
-                            <MudMenuItem>Usage</MudMenuItem>
-                            <MudMenuItem OnClick="BeginSignOut">Sign Out</MudMenuItem>
-                        </ChildContent>
-                    </MudMenu>
+                    <MudIconButton Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => ToggleRightDrawer())">
+                        <MudAvatar Color="Color.Warning" Image="@userDto.Image"/>
+                    </MudIconButton>
                 </MudExpansionPanels>
             </Authorized>
             <NotAuthorized>
@@ -40,6 +33,25 @@
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Never" Breakpoint="Breakpoint.Sm" Elevation="24" Variant="@DrawerVariant.Persistent" OpenMiniOnHover="false">
         <NavMenuCategory/>
     </MudDrawer>
+    <MudDrawer @bind-Open="@openEnd" ClipMode="DrawerClipMode.Never" Breakpoint="Breakpoint.Sm" Anchor="Anchor.End" Elevation="24" Variant="@DrawerVariant.Persistent" OpenMiniOnHover="false">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h6">Settings</MudText>
+        </MudDrawerHeader>
+        <MudNavMenu>
+            <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AccountBox">Profile</MudNavLink>
+            @if (@BadgeContent != null)
+            {
+                <MudBadge Origin="Origin.CenterRight" Content="@BadgeContent" Color="Color.Error" Overlap="false" Dot="false" Bordered="true">
+                    <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.ShoppingCart">Orders  </MudNavLink>
+                </MudBadge>
+            }
+            else
+            {
+                <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.ShoppingCart">Orders</MudNavLink>  
+            }
+            <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.History">Order History</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
     <MudMainContent>
         <MudContainer>
             @Body
@@ -49,8 +61,10 @@
 @code {
     UserDto userDto = new UserDto();
     bool _drawerOpen = true;
+    bool openEnd = false;
     private bool _isDarkMode = false;
     private MudThemeProvider _mudThemeProvider;
+    public int? BadgeContent { get; set; } = 5;
 
     public void OnToggledChanged(bool toggled)
     {
@@ -80,7 +94,7 @@
     }
     void ToggleRightDrawer()
     {
-        
+        openEnd = !openEnd;
     }
     private async Task BeginSignOut(MouseEventArgs args)
     {
@@ -89,7 +103,17 @@
         else await _jsRuntime.InvokeVoidAsync("alert", "Đăng không xuất thành công!");
 
     }
-
+    public void AddBadgeContentValue()
+    {
+        if(BadgeContent == null)
+        {
+            BadgeContent = 1;
+        }
+        else
+        {
+            BadgeContent += 25;
+        }
+    }
     void Login()
     {
         _navigationManager.NavigateTo("/login");
