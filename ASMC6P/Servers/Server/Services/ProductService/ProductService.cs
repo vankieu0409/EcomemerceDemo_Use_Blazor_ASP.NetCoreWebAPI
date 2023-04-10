@@ -147,16 +147,21 @@ namespace ASMC6P.Server.Services.ProductService
             return result;
         }
 
-        public async Task<ProductSearchResult> SearchProducts(string searchText)
+        public async Task<ProductSearchResult> SearchProducts(string searchText, int page)
         {
+            var pageResults = 4f;
+            var pageCount = Math.Ceiling((await FindProductsBySearchText(searchText)).Count / pageResults);
             var products = await _productRepository.AsQueryable()
                                 .Where(p => p.Name.ToLower().Contains(searchText.ToLower()) ||
                                     p.Description.ToLower().Contains(searchText.ToLower()) && !p.IsDeleted)
+                                .Skip((page - 1) * (int)pageResults)
+                                .Take((int)pageResults)
                                 .ToListAsync();
-
             var response = new ProductSearchResult
             {
                 Products = products,
+                CurrentPage = page,
+                Pages = (int)pageCount
             };
 
             return response;

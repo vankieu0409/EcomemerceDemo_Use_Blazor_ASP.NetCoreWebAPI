@@ -71,10 +71,10 @@ namespace ASMC6P.Server.Controllers
             return Ok(result);
         }
 
-        [HttpGet("search/{searchText}")]
-        public async Task<ActionResult<ProductSearchResult>> SearchProducts([FromODataUri] string searchText, ODataQueryOptions<string> queryOptions)
+        [HttpGet("search/{searchText}/{page}")]
+        public async Task<ActionResult<ProductSearchResult>> SearchProducts(string searchText, int page = 1)
         {
-            var result = await _productService.SearchProducts(searchText);
+            var result = await _productService.SearchProducts(searchText, page);
             return Ok(result);
         }
 

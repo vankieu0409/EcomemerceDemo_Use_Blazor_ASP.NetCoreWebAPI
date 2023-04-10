@@ -8,7 +8,7 @@ namespace ASMC6P.Server.Services.ProductService
         Task<List<ProductEntity>> GetProductsAsync();
         Task<ProductEntity> GetProductAsync(Guid productId);
         Task<List<ProductEntity>> GetProductsByCategory(string categoryUrl);
-        Task<ProductSearchResult> SearchProducts(string searchText);
+        Task<ProductSearchResult> SearchProducts(string searchText, int page);
         Task<List<string>> GetProductSearchSuggestions(string searchText);
         Task<List<ProductEntity>> GetFeaturedProducts();
         Task<List<ProductEntity>> GetAdminProducts();

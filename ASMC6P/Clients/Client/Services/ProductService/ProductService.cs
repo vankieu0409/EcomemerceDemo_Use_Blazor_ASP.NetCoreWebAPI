@@ -65,11 +65,11 @@ namespace ASMC6P.Client.Services.ProductService
             return result;
         }
 
-        public async Task SearchProducts(string searchText)
+        public async Task SearchProducts(string searchText, int page)
         {
             LastSearchText = searchText;
             var result = await _http
-                 .GetFromJsonAsync<ProductSearchResult>($"api/Product/search/{searchText}");
+                 .GetFromJsonAsync<ProductSearchResult>($"api/Product/search/{searchText}/{page}");
             if (result != null && result != null)
             {
                 Products = result.Products;

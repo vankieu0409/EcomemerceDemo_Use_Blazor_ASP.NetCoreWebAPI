@@ -13,7 +13,7 @@ namespace ASMC6P.Client.Services.ProductService
         string LastSearchText { get; set; }
         Task<List<ProductEntity>> GetProducts(string? categoryUrl = null);
         Task<ProductEntity> GetProduct(Guid productId);
-        Task SearchProducts(string searchText);
+        Task SearchProducts(string searchText, int page);
         Task<List<string>> GetProductSearchSuggestions(string searchText);
         Task<List<ProductEntity>> GetAdminProducts();
         Task<ProductEntity> CreateProduct(ProductEntity product);

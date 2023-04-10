@@ -2,7 +2,7 @@
 <div class="col-3"></div>
 <div class="col-4">
 
-    <MudAutocomplete Style="margin: 0 10px 10px 0px;" T="string" Label="Search" @bind-Value="searchText" SearchFunc="Search2" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" />
+    <MudAutocomplete Style="margin: 0 10px 10px 0px;" T="string" Label="Search" @bind-Value="searchText" ResetValueOnEmptyText="true" Margin="Margin.Dense" SearchFunc="Search2" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" />
 </div>
 <div class="col-2">
     <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SearchProducts">Search</MudButton>
@@ -23,7 +23,7 @@
 
     public async Task SearchProducts()
     {
-        _navigationManager.NavigateTo($"/search/{searchText}");
+        _navigationManager.NavigateTo($"/search/{searchText}/1");
     }
 
     public async Task HandleSearch(ChangeEventArgs args)
