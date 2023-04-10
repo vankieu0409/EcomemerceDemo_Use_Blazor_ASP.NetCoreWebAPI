@@ -1,17 +1,18 @@
 ﻿@page "/{categoryUrl}"
+@page "/search/{searchText}"
 @using ASMC6P.Shared.Entities
 <h3>ListProduct</h3>
 <MudGrid>
     @foreach (var product in list)
     {
-        <MudItem xs="12" sm="6" md="4" lg="3" xl="2" >
+        <MudItem xs="12" sm="6" md="4" lg="3" xl="2">
             <MudCard>
                 <MudImage Src="@product.Image" Style="height: -webkit-fill-available;width: -webkit-fill-available; margin: 1vi;" />
                 <MudCardContent>
                     <div class="text-center">
                         <h4 class="mb-2" Value="@product.Id">@product.Name</h4>
                         <h5 class="mb-2">$@product.OriginalPrice</h5>
-                         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => AddToCart(product))">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => AddToCart(product))">
                             Add to Cart
                         </MudButton>
                     </div>
@@ -20,26 +21,40 @@
         </MudItem>
     }
 </MudGrid>
+<MudPagination ShowFirstButton="true" ShowLastButton="true" Selected="@Size" Count="@pageCount" Class="mt-4" />
 @code {
     [Parameter]
     public string? categoryUrl { get; set; } = null;
     List<ProductEntity> list { get; set; } = new List<ProductEntity>();
+    public int pageCount { get; set; } = 1;
+    public int Size { get; set; } = 4;
+    [Parameter]
+    public string? searchText { get; set; } = null;
     protected async override Task OnInitializedAsync()
     {
-        list= await _productService.GetProducts();
+        list = await _productService.GetProducts();
     }
 
     protected async override Task OnParametersSetAsync()
     {
-        list = await _productService.GetProducts(categoryUrl);
+        if (searchText != null)
+        {
+            await _productService.SearchProducts(searchText);
+            list = _productService.Products;
+        }
+        else
+        {
+            list = await _productService.GetProducts(categoryUrl);
+        }
+       
     }
 
     private async Task AddToCart(ProductEntity product)
     {
         var cartItem = new CartItemEntity()
-        {
-            ProductId = product.Id
-        };
+            {
+                ProductId = product.Id
+            };
 
         await _cartService.AddToCart(cartItem);
     }

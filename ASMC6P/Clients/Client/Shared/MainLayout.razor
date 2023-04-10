@@ -11,9 +11,9 @@
 <MudLayout>
     <MudAppBar Elevation="24" Color="Color.Primary">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <Search></Search>
         <AuthorizeView>
             <Authorized>
-               
                 <MudSpacer />
                 <MudExpansionPanels>
                     <MudIconButton Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => ToggleRightDrawer())">
@@ -34,23 +34,7 @@
         <NavMenuCategory/>
     </MudDrawer>
     <MudDrawer @bind-Open="@openEnd" ClipMode="DrawerClipMode.Never" Breakpoint="Breakpoint.Sm" Anchor="Anchor.End" Elevation="24" Variant="@DrawerVariant.Persistent" OpenMiniOnHover="false">
-        <MudDrawerHeader>
-            <MudText Typo="Typo.h6">Settings</MudText>
-        </MudDrawerHeader>
-        <MudNavMenu>
-            <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AccountBox">Profile</MudNavLink>
-            @if (@BadgeContent != null)
-            {
-                <MudBadge Origin="Origin.CenterRight" Content="@BadgeContent" Color="Color.Error" Overlap="false" Dot="false" Bordered="true">
-                    <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.ShoppingCart">Orders  </MudNavLink>
-                </MudBadge>
-            }
-            else
-            {
-                <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.ShoppingCart">Orders</MudNavLink>  
-            }
-            <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.History">Order History</MudNavLink>
-        </MudNavMenu>
+        <NavUser></NavUser>
     </MudDrawer>
     <MudMainContent>
         <MudContainer>
@@ -95,24 +79,6 @@
     void ToggleRightDrawer()
     {
         openEnd = !openEnd;
-    }
-    private async Task BeginSignOut(MouseEventArgs args)
-    {
-        var checkLogout = await _authentication.LogoutService();
-        if (checkLogout) _navigationManager.NavigateTo("/", true);
-        else await _jsRuntime.InvokeVoidAsync("alert", "Đăng không xuất thành công!");
-
-    }
-    public void AddBadgeContentValue()
-    {
-        if(BadgeContent == null)
-        {
-            BadgeContent = 1;
-        }
-        else
-        {
-            BadgeContent += 25;
-        }
     }
     void Login()
     {

@@ -1,0 +1,51 @@
+﻿
+<div class="col-3"></div>
+<div class="col-4">
+
+    <MudAutocomplete Style="margin: 0 10px 10px 0px;" T="string" Label="Search" @bind-Value="searchText" SearchFunc="Search2" AdornmentIcon="@Icons.Material.Filled.Search" AdornmentColor="Color.Primary" />
+</div>
+<div class="col-2">
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SearchProducts">Search</MudButton>
+</div>
+@code {
+
+    private string searchText = string.Empty;
+    private List<string> suggestions = new List<string>();
+    protected ElementReference searchInput;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await searchInput.FocusAsync();
+        }
+    }
+
+    public async Task SearchProducts()
+    {
+        _navigationManager.NavigateTo($"/search/{searchText}");
+    }
+
+    public async Task HandleSearch(ChangeEventArgs args)
+    {
+        if (args.Value == null)
+        {
+            searchText = string.Empty;
+        }
+        else if (searchText.Length > 1)
+        {
+            suggestions = await _productService.GetProductSearchSuggestions(searchText);
+        }
+    }
+   
+    private async Task<IEnumerable<string>> Search2(string value){
+        // In real life use an asynchronous function for fetching data from an api.
+        await Task.Delay(5);
+        // suggestions= _productService.GetProductSearchSuggestions(searc)
+        // if text is null or empty, don't return values (drop-down will not open)
+        if (string.IsNullOrEmpty(value))
+            return new string[0];
+        return await _productService.GetProductSearchSuggestions(value);
+    }
+
+}

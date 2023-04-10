@@ -14,6 +14,7 @@ public partial class LoginComponent : ComponentBase
 
     public List<string> _messErorrCollection = new();
     [Inject] private IDialogService DialogService { get; set; }
+
     private LoginUserViewModel userLogin { get; set; } = new();
 
     private CreateUserViewModel userRegister { get; set; } = new();

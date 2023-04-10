@@ -77,7 +77,6 @@ namespace ASMC6P.Client.Services.ProductService
                 PageCount = result.Pages;
             }
             if (Products.Count == 0) Message = "No products found.";
-            ProductsChanged?.Invoke();
         }
 
         public async Task<ProductEntity> UpdateProduct(ProductEntity product)
