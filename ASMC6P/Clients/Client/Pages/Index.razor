@@ -14,6 +14,7 @@
         base.OnAfterRender(firstRender);
         var roles = await _authentication.GetRoleCollection();
         await _localStorage.SetItemAsync("roles", roles);
+        await _cartService.GetCartItemsCount();
     }
 
 }

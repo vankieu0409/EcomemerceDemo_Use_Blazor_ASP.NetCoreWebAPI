@@ -56,17 +56,18 @@ namespace ASMC6P.Client.Services.CartService
         {
             if (await _authenticationService.IsUserAuthenticated())
             {
-                var result = await _http.GetFromJsonAsync<int>("api/cart/count");
+                var result = await _http.GetFromJsonAsync<int>("api/Cart/count");
                 var count = result;
 
                 await _localStorage.SetItemAsync<int>("cartItemsCount", count);
+
             }
             else
             {
                 var cart = await _localStorage.GetItemAsync<List<CartItemEntity>>("cart");
                 await _localStorage.SetItemAsync<int>("cartItemsCount", cart != null ? cart.Count : 0);
-            }
 
+            }
             OnChange.Invoke();
         }
 

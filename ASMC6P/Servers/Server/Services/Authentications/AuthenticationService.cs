@@ -59,7 +59,6 @@ public class AuthenticationService : IAuthenticationService
         if (signManager.Succeeded)
         {
             var userResult = _mapper.Map<UserDto>(user);
-
             var token = CreateToken(user);
             var refreshToken = CreateRefreshToken();
             SetRefreshToken(refreshToken, user);

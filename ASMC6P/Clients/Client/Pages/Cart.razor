@@ -1,0 +1,118 @@
+﻿@page "/cart"
+@using ASMC6P.Shared.Entities
+@using ASMC6P.Shared.Dtos
+@inject ISnackbar snackbar
+
+<h3>Cart</h3>
+
+<MudTable Items="@cartProducts" MultiSelection="true" Dense="false" Hover="true" ReadOnly="false" @bind-SelectedItems="selectedItems" CanCancelEdit="true" Filter="new Func<CartProductDto,bool>(FilterFunc)"
+          @bind-SelectedItem="selectedItem1" SortLabel="Sort By" CommitEditTooltip="Commit Edit"
+          OnCommitEditClick="@(() => snackbar.Add("Commit Edit Handler Invoked"))" RowEditPreview="BackupItem" RowEditCancel="ResetItemToOriginalValues"
+          RowEditCommit="ItemHasBeenCommitted" IsEditRowSwitchingBlocked="false" ApplyButtonPosition="@applyButtonPosition" EditButtonPosition="@editButtonPosition" EditTrigger="@editTrigger">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Periodic CartProductDtos</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<CartProductDto, object>(x => x.Name)">ảnh</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<CartProductDto, object>(x => x.Name)">tên</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<CartProductDto, object>(x => x.Price)">giá</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<CartProductDto, object>(x => x.Quantity)">Số lượng</MudTableSortLabel></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Ảnh"><MudImage Src="@context.ImageUrl" Style="height: 200px;width: 100px; margin: 1vi;"></MudImage></MudTd>
+        <MudTd DataLabel="Tên">@context.Name</MudTd>
+        <MudTd DataLabel="Giá">@context.Price</MudTd>
+        <MudTd DataLabel="Số lượng">@context.Quantity</MudTd>
+    </RowTemplate>
+    <RowEditingTemplate>
+        <MudTd DataLabel="ảnh">
+            <MudTextField @bind-Value="@context.ImageUrl" Required Disabled="true" />
+        </MudTd>
+        <MudTd DataLabel="Tên">
+            <MudTextField @bind-Value="@context.Name" Required Disabled="true" />
+        </MudTd>
+        <MudTd DataLabel="Giá">
+            <MudNumericField @bind-Value="@context.Price" Required  Disabled="true" />
+        </MudTd>
+        <MudTd DataLabel="Số lượng">
+            <MudNumericField @bind-Value="@context.Quantity" Required Min="1" />
+        </MudTd>
+    </RowEditingTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+    <EditButtonContent Context="button">
+        <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="false" />
+    </EditButtonContent>
+</MudTable>
+
+<MudButton OnClick="Order">Đặt hàng</MudButton>
+@code {
+    private List<string> editEvents = new();
+    private string searchString = "";
+    private CartProductDto selectedItem1 = null;
+    private CartProductDto CartProductDtoBeforeEdit;
+    private HashSet<CartProductDto> selectedItems = new HashSet<CartProductDto>();
+    private TableApplyButtonPosition applyButtonPosition = TableApplyButtonPosition.End;
+    private TableEditButtonPosition editButtonPosition = TableEditButtonPosition.End;
+    private TableEditTrigger editTrigger = TableEditTrigger.RowClick;
+    private List<CartProductDto> cartProductDto = new List<CartProductDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        cartProducts = await _cartService.GetCartProducts();
+    }
+
+
+    private void AddEditionEvent(string message)
+    {
+        editEvents.Add(message);
+        StateHasChanged();
+    }
+
+    private void BackupItem(object CartProductDto)
+    {
+        CartProductDtoBeforeEdit = new()
+            {
+                ImageUrl = ((CartProductDto)CartProductDto).ImageUrl,
+                Name = ((CartProductDto)CartProductDto).Name,
+                Price = ((CartProductDto)CartProductDto).Price,
+                Quantity = ((CartProductDto)CartProductDto).Quantity
+            };
+        AddEditionEvent($"RowEditPreview event: made a backup of CartProductDto {((CartProductDto)CartProductDto).Name}");
+    }
+
+    private void ItemHasBeenCommitted(object CartProductDto)
+    {
+        AddEditionEvent($"RowEditCommit event: Changes to CartProductDto {((CartProductDto)CartProductDto).Name} committed");
+    }
+
+    private void ResetItemToOriginalValues(object CartProductDto)
+    {
+        ((CartProductDto)CartProductDto).ImageUrl = CartProductDtoBeforeEdit.ImageUrl;
+        ((CartProductDto)CartProductDto).Name = CartProductDtoBeforeEdit.Name;
+        ((CartProductDto)CartProductDto).Price = CartProductDtoBeforeEdit.Price;
+        ((CartProductDto)CartProductDto).Quantity = CartProductDtoBeforeEdit.Quantity;
+        AddEditionEvent($"RowEditCancel event: Editing of CartProductDto {((CartProductDto)CartProductDto).Name} canceled");
+    }
+
+    private bool FilterFunc(CartProductDto CartProductDto)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (CartProductDto.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{CartProductDto.Price} {CartProductDto.Quantity}".Contains(searchString))
+            return true;
+        return false;
+    } 
+    List<CartProductDto> cartProducts { get; set; } = new List<CartProductDto>();
+
+    void Order()
+    {
+       
+    }
+}
+

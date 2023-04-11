@@ -5,6 +5,8 @@ using ASMC6P.Shared.Entities;
 
 using Microsoft.EntityFrameworkCore;
 
+using System.Security.Claims;
+
 namespace ASMC6P.Server.Services.CartService
 {
     public class CartService : ICartService
@@ -19,7 +21,7 @@ namespace ASMC6P.Server.Services.CartService
             _cartRepository = cartRepository;
             _productRepository = productRepository;
             _httpContextAccessor = httpContextAccessor;
-            userId = Guid.Parse(_httpContextAccessor?.HttpContext?.Request.Cookies["userid"]);
+            userId = Guid.Parse(_httpContextAccessor?.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier));
         }
 
         public async Task<List<CartProductDto>> GetCartProducts(List<CartItemEntity> cartItems)
@@ -41,7 +43,7 @@ namespace ASMC6P.Server.Services.CartService
                 var cartProduct = new CartProductDto
                 {
                     ProductId = product.Id,
-                    Title = product.Name,
+                    Name = product.Name,
                     ImageUrl = product.Image,
                     Price = (product.NewPrice != null) ? product.NewPrice : product.OriginalPrice,
                     Quantity = item.Quantity
@@ -55,7 +57,7 @@ namespace ASMC6P.Server.Services.CartService
 
         public async Task<List<CartProductDto>> StoreCartItems(List<CartItemEntity> cartItems)
         {
-            var userId = Guid.Parse(_httpContextAccessor?.HttpContext?.Request.Cookies["userid"]);
+            var userId = Guid.Parse(_httpContextAccessor?.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier));
             cartItems.ForEach(cartItem => cartItem.UserId = userId);
             await _cartRepository.AddRangeAsync(cartItems);
             await _cartRepository.SaveChangesAsync();
@@ -65,6 +67,7 @@ namespace ASMC6P.Server.Services.CartService
 
         public Task<int> GetCartItemsCount()
         {
+            var userId = Guid.Parse(_httpContextAccessor?.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier));
             var count = _cartRepository.AsQueryable().Where(ci => ci.UserId == userId).ToList().Count;
             return Task.FromResult(count);
         }
