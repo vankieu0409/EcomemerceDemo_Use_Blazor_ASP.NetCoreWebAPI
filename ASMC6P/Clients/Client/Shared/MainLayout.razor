@@ -5,10 +5,11 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using MudBlazor
 
+
 <MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" />
 <MudDialogProvider />
 <MudSnackbarProvider />
-<MudLayout>
+<MudLayout >
     <MudAppBar Elevation="24" Color="Color.Primary">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <Search></Search>
@@ -48,7 +49,7 @@
     bool openEnd = false;
     private bool _isDarkMode = false;
     private MudThemeProvider _mudThemeProvider;
-    public int? BadgeContent { get; set; } = 5;
+    
 
     public void OnToggledChanged(bool toggled)
     {
@@ -83,5 +84,11 @@
     void Login()
     {
         _navigationManager.NavigateTo("/login");
+    }
+
+    protected async void UnloadHandler()
+    {
+        await _jsRuntime.InvokeVoidAsync("beforunload");
+        
     }
 }

@@ -1,12 +1,13 @@
 ﻿@page "/cart"
 @using ASMC6P.Shared.Entities
 @using ASMC6P.Shared.Dtos
+@using System.Text.Json
 @inject ISnackbar snackbar
 
 <h3>Cart</h3>
 
 <MudTable Items="@cartProducts" MultiSelection="true" Dense="false" Hover="true" ReadOnly="false" @bind-SelectedItems="selectedItems" CanCancelEdit="true" Filter="new Func<CartProductDto,bool>(FilterFunc)"
-          @bind-SelectedItem="selectedItem1" SortLabel="Sort By" CommitEditTooltip="Commit Edit"
+          @bind-SelectedItem="selectedItem1" SortLabel="Sort By" CommitEditTooltip="Commit Edit" 
           OnCommitEditClick="@(() => snackbar.Add("Commit Edit Handler Invoked"))" RowEditPreview="BackupItem" RowEditCancel="ResetItemToOriginalValues"
           RowEditCommit="ItemHasBeenCommitted" IsEditRowSwitchingBlocked="false" ApplyButtonPosition="@applyButtonPosition" EditButtonPosition="@editButtonPosition" EditTrigger="@editTrigger">
     <ToolBarContent>
@@ -15,9 +16,9 @@
         <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <HeaderContent>
-        <MudTh><MudTableSortLabel SortBy="new Func<CartProductDto, object>(x => x.Name)">ảnh</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<CartProductDto, object>(x => x.Name)">tên</MudTableSortLabel></MudTh>
-        <MudTh><MudTableSortLabel SortBy="new Func<CartProductDto, object>(x => x.Price)">giá</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<CartProductDto, object>(x => x.Name)">Ảnh</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<CartProductDto, object>(x => x.Name)">Tên</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<CartProductDto, object>(x => x.Price)">Giá</MudTableSortLabel></MudTh>
         <MudTh><MudTableSortLabel SortBy="new Func<CartProductDto, object>(x => x.Quantity)">Số lượng</MudTableSortLabel></MudTh>
     </HeaderContent>
     <RowTemplate>
@@ -27,7 +28,7 @@
         <MudTd DataLabel="Số lượng">@context.Quantity</MudTd>
     </RowTemplate>
     <RowEditingTemplate>
-        <MudTd DataLabel="ảnh">
+        <MudTd DataLabel="Ảnh">
             <MudTextField @bind-Value="@context.ImageUrl" Required Disabled="true" />
         </MudTd>
         <MudTd DataLabel="Tên">
@@ -46,9 +47,12 @@
     <EditButtonContent Context="button">
         <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="false" />
     </EditButtonContent>
-</MudTable>
+   
 
-<MudButton OnClick="Order">Đặt hàng</MudButton>
+</MudTable>
+        <MudButton Variant="Variant.Filled" Style="justify-items: left" Size="@Size.Large"  Color="Color.Error" OnClick="RemoveItemCartItem"> Xóa </MudButton>
+        <MudButton Variant="Variant.Filled" Style="justify-items: right" Size="@Size.Large"  Color="Color.Success" OnClick="Order">Đặt hàng</MudButton>
+
 @code {
     private List<string> editEvents = new();
     private string searchString = "";
@@ -65,6 +69,7 @@
         cartProducts = await _cartService.GetCartProducts();
     }
 
+    
 
     private void AddEditionEvent(string message)
     {
@@ -72,21 +77,32 @@
         StateHasChanged();
     }
 
-    private void BackupItem(object CartProductDto)
+    private void BackupItem(object cartProductDto)
     {
         CartProductDtoBeforeEdit = new()
-            {
-                ImageUrl = ((CartProductDto)CartProductDto).ImageUrl,
-                Name = ((CartProductDto)CartProductDto).Name,
-                Price = ((CartProductDto)CartProductDto).Price,
-                Quantity = ((CartProductDto)CartProductDto).Quantity
-            };
-        AddEditionEvent($"RowEditPreview event: made a backup of CartProductDto {((CartProductDto)CartProductDto).Name}");
+        {
+            ImageUrl = ((CartProductDto)cartProductDto).ImageUrl,
+            Name = ((CartProductDto)cartProductDto).Name,
+            Price = ((CartProductDto)cartProductDto).Price,
+            Quantity = ((CartProductDto)cartProductDto).Quantity
+        };
+        AddEditionEvent($"RowEditPreview event: made a backup of CartProductDto {((CartProductDto)cartProductDto).Name}");
     }
 
-    private void ItemHasBeenCommitted(object CartProductDto)
+    private async void RemoveItemCartItem()
     {
-        AddEditionEvent($"RowEditCommit event: Changes to CartProductDto {((CartProductDto)CartProductDto).Name} committed");
+        foreach (var VARIABLE in selectedItems.ToList())
+        {
+            await _cartService.RemoveProductFromCart(VARIABLE.ProductId);
+        }
+        cartProducts = await _cartService.GetCartProducts();
+    }
+
+    private async void ItemHasBeenCommitted(object cartProductDto)
+    {
+        await _cartService.UpdateQuantity((CartProductDto)cartProductDto);
+        cartProducts = await _cartService.GetCartProducts();
+        AddEditionEvent($"RowEditCommit event: Changes to CartProductDto {((CartProductDto)cartProductDto).Name} committed");
     }
 
     private void ResetItemToOriginalValues(object CartProductDto)
@@ -107,12 +123,16 @@
         if ($"{CartProductDto.Price} {CartProductDto.Quantity}".Contains(searchString))
             return true;
         return false;
-    } 
+    }
+
     List<CartProductDto> cartProducts { get; set; } = new List<CartProductDto>();
 
     void Order()
     {
-       
+        _cartService.SelectItems = selectedItems.ToList();
+        string jsonString = JsonSerializer.Serialize(selectedItems.ToList());
+        string url = "/create-order?objects=" + Uri.EscapeDataString(jsonString);
+        _navigationManager.NavigateTo(url);
     }
-}
 
+}

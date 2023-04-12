@@ -47,12 +47,12 @@ public partial class LoginComponent : ComponentBase
         _processing = false;
         if (result.Success)
         {
-            await DialogService.ShowMessageBox("Thông báo", "Đăng nhập Thành Công!", yesText: "Triển thôi!");
+            await DialogService.ShowMessageBox("Thông báo", "Đăng nhập Thành Công!", yesText: "Triển thôi!", null, null, new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraExtraLarge });
             _navigationManager.NavigateTo("/");
         }
         else
         {
-            await DialogService.ShowMessageBox("Thông báo", result.Message, yesText: "Làm lại!");
+            await DialogService.ShowMessageBox("Thông báo", result.Message, yesText: "Làm lại!", null, null, new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraExtraLarge });
             _navigationManager.NavigateTo("/login");
         }
 
@@ -67,9 +67,13 @@ public partial class LoginComponent : ComponentBase
         userRegister.Role = "Customers";
         _processing = true;
         var isAccessed = await _authentication.RegiterService(userRegister);
-        await DialogService.ShowMessageBox("Thông báo", "Đăng ký Thành Công!", yesText: "Triển thôi!");
+        await DialogService.ShowMessageBox("Thông báo", "Đăng ký Thành Công!", yesText: "Triển thôi!", null, null, new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraExtraLarge });
         _processing = false;
-        if (isAccessed) _navigationManager.NavigateTo("/login");
+        if (isAccessed)
+        {
+            await DialogService.ShowMessageBox("Thông báo", " Tạo tài khoản không thành công!", yesText: "Làm lại!", null, null, new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraExtraLarge });
+            _navigationManager.NavigateTo("/login");
+        }
     }
     void ButtonTestClick()
     {

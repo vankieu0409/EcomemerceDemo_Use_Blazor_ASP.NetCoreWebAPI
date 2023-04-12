@@ -1,5 +1,6 @@
 ﻿using ASMC6P.Server.Services.OrderService;
 using ASMC6P.Shared.Dtos;
+using ASMC6P.Shared.ViewModels;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,6 +28,12 @@ namespace BlazorEcommerce.Server.Controllers
         public async Task<ActionResult<OrderDetailsDto>> GetOrdersDetails(Guid orderId)
         {
             var result = await _orderService.GetOrderDetails(orderId);
+            return Ok(result);
+        }
+        [HttpPost()]
+        public async Task<ActionResult<OrderDetailsDto>> PlaceOrders([FromBody] CreateOrderViewModel products)
+        {
+            var result = await _orderService.PlaceOrder(products.ProductCollection);
             return Ok(result);
         }
     }

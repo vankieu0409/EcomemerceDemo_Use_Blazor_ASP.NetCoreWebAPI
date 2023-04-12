@@ -11,6 +11,6 @@ namespace ASMC6P.Server.Services.CartService
         Task<List<CartProductDto>> GetDbCartProducts();
         Task<bool> AddToCart(CartItemEntity cartItem);
         Task<bool> UpdateQuantity(CartItemEntity cartItem);
-        Task<bool> RemoveItemFromCart(Guid productId, Guid productTypeId);
+        Task<bool> RemoveItemFromCart(Guid productId);
     }
 }

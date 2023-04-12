@@ -20,4 +20,5 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddMudServices();
 builder.Services.AddAuthorizationCore();
 
+
 await builder.Build().RunAsync();

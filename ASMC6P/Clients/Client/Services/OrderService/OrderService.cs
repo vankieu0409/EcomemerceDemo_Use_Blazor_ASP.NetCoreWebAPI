@@ -1,4 +1,5 @@
 ﻿using ASMC6P.Shared.Dtos;
+using ASMC6P.Shared.ViewModels;
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -22,9 +23,9 @@ namespace ASMC6P.Client.Services.OrderService
             _navigationManager = navigationManager;
         }
 
-        public async Task<OrderDetailsDto> GetOrderDetails(int orderId)
+        public async Task<OrderDetailsDto> GetOrderDetails(Guid orderId)
         {
-            var result = await _http.GetFromJsonAsync<OrderDetailsDto>($"api/Order/{orderId}");
+            var result = await _http.GetFromJsonAsync<OrderDetailsDto>($"api/order/{orderId}");
             return result;
         }
 
@@ -34,18 +35,13 @@ namespace ASMC6P.Client.Services.OrderService
             return result;
         }
 
-        public async Task<string> PlaceOrder()
+        public async Task<bool> PlaceOrder(CreateOrderViewModel products)
         {
-            if (await IsUserAuthenticated())
-            {
-                var result = await _http.PostAsync("api/payment/checkout", null);
-                var url = await result.Content.ReadAsStringAsync();
-                return url;
-            }
-            else
-            {
-                return "login";
-            }
+
+            var result = await _http.PostAsJsonAsync($"api/order", products);
+
+            return result.IsSuccessStatusCode;
+
         }
         private async Task<bool> IsUserAuthenticated()
         {

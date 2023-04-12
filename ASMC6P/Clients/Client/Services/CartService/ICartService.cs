@@ -8,9 +8,10 @@ namespace ASMC6P.Client.Services.CartService
         event Action OnChange;
         Task AddToCart(CartItemEntity cartItem);
         Task<List<CartProductDto>> GetCartProducts();
-        Task RemoveProductFromCart(Guid productId, Guid productTypeId);
+        Task RemoveProductFromCart(Guid productId);
         Task UpdateQuantity(CartProductDto product);
         Task StoreCartItems(bool emptyLocalCart);
         Task GetCartItemsCount();
+        List<CartProductDto> SelectItems { get; set; }
     }
 }

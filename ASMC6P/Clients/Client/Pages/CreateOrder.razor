@@ -1,0 +1,118 @@
+﻿@page "/create-order"
+@using ASMC6P.Shared.Entities
+@using ASMC6P.Shared.Dtos
+@using System.Text.Json
+@using ASMC6P.Shared.ViewModels
+@using Microsoft.AspNetCore.WebUtilities
+@using Microsoft.EntityFrameworkCore.Storage
+
+<h3>Create Order</h3>
+
+<MudText Typo="Typo.h6"> thông tin khách hàng</MudText>
+<MudText>
+    Tên:
+    <MudTextField @bind-Value="@user.DisplayName" Required Disabled="true" />
+    </MudText>
+    <MudText>
+    Số điện thoại:
+    <MudTextField @bind-Value="@user.PhoneNumber" Required Disabled="true" />
+    </MudText>
+    <MudText>
+    Địa chỉ:
+    <MudTextField @bind-Value="@user.Address" Required Disabled="true" />
+    </MudText>
+
+    <MudDivider DividerType="DividerType.Middle" />
+
+    <MudText Typo="Typo.h6"> Danh Sách Sản phẩm </MudText>
+
+<MudTable Items="cartProduct">
+
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<CartProductDto, object>(x => x.Name)">Ảnh</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<CartProductDto, object>(x => x.Name)">Tên</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<CartProductDto, object>(x => x.Price)">Giá</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<CartProductDto, object>(x => x.Quantity)">Số lượng</MudTableSortLabel></MudTh>
+    </HeaderContent>
+
+    <RowTemplate>
+        <MudTd DataLabel="Ảnh"><MudImage Src="@context.ImageUrl" Style="height: 200px; width: 100px; margin: 1vi;"></MudImage></MudTd>
+        <MudTd DataLabel="Tên">@context.Name</MudTd>
+        <MudTd DataLabel="Giá">@context.Price</MudTd>
+        <MudTd DataLabel="Số lượng">@context.Quantity</MudTd>
+    </RowTemplate>
+    
+    <FooterContent>
+        <MudText Typo="Typo.h6"  Style="justify-content: end">Tổng tiền: @tutolPrice VND</MudText>
+    </FooterContent>
+
+</MudTable>
+
+    <MudButton Style="justify-content: end" Color="Color.Default" OnClick="CreateNewOrder"> Đặt hóa đơn</MudButton>
+    @code {
+
+    UserDto user { get; set; } = new UserDto();
+        decimal tutolPrice { get; set; } = 0;
+        CreateOrderViewModel createOrder { get; set; } = new CreateOrderViewModel();
+
+    List<CartProductDto> cartProduct { get; set; } = new List<CartProductDto>();
+    [Parameter]
+    public string Objects { get; set; }
+
+    protected override void OnInitialized()
+    {
+        user = _localStorageSync.GetItem<UserDto>("user");
+        var uri = _navigationManager.ToAbsoluteUri(_navigationManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("objects", out var myData))
+        {
+            Objects = myData;
+        }
+        string jsonString = Uri.UnescapeDataString(Objects);
+        cartProduct = JsonSerializer.Deserialize<List<CartProductDto>>(jsonString);
+        createOrder.ProductCollection = cartProduct;
+        foreach (var VARIABLE in cartProduct)
+        {
+            tutolPrice = tutolPrice + (VARIABLE.Price * VARIABLE.Quantity);
+        }
+    }
+
+    //protected override void OnParametersSet()
+    //{
+    //    if (!string.IsNullOrEmpty(Objects))
+    //    {
+    //        string jsonString = Uri.UnescapeDataString(Objects);
+    //        cartProduct = JsonSerializer.Deserialize<List<CartProductDto>>(jsonString);
+    //// Sử dụng danh sách đối tượng ở đây
+    //    }
+    //}
+    public async void CreateNewOrder()
+    {
+        var result = await _orderService.PlaceOrder(createOrder);
+
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Thêm thành công.");
+        parameters.Add("ButtonRight", "Mua tiếp!");
+        parameters.Add("ButtonLeft", "Té thôi!");
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraExtraLarge };
+
+        if (result)
+        {
+            var a = await _dialog.Show<Dialog>("Thông báo", parameters, options).Result;
+            if (a.Canceled)
+            {
+                _navigationManager.NavigateTo("/");
+            }
+            else
+            {
+                var b = a.Data;
+                _navigationManager.NavigateTo("/");
+            }
+        }
+        else
+        {
+            await _dialog.ShowMessageBox("Thông báo!", "Đặt hàng không thành công!", yesText: "Làm lại!", null, null, new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraExtraLarge });
+        }
+
+    }
+}

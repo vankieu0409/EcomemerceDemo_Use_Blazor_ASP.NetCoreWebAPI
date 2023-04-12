@@ -4,7 +4,7 @@ namespace ASMC6P.Server.Services.OrderService
 {
     public interface IOrderService
     {
-        Task<bool> PlaceOrder();
+        Task<bool> PlaceOrder(List<CartProductDto> products);
         Task<List<OrderOverviewDto>> GetOrders();
         Task<OrderDetailsDto> GetOrderDetails(Guid orderId);
     }

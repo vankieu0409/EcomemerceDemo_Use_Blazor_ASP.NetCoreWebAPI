@@ -13,6 +13,8 @@ namespace ASMC6P.Client.Services.CartService
         private readonly ILocalStorageService _localStorage;
         private readonly HttpClient _http;
         private readonly IAuthenticationService _authenticationService;
+        public List<CartProductDto> SelectItems { get; set; }
+
 
         public CartService(ILocalStorageService localStorage, HttpClient http, IAuthenticationService authenticationService)
         {
@@ -91,11 +93,11 @@ namespace ASMC6P.Client.Services.CartService
 
         }
 
-        public async Task RemoveProductFromCart(Guid productId, Guid productTypeId)
+        public async Task RemoveProductFromCart(Guid productId)
         {
             if (await _authenticationService.IsUserAuthenticated())
             {
-                await _http.DeleteAsync($"api/cart/{productId}/{productTypeId}");
+                await _http.DeleteAsync($"api/cart/{productId}");
             }
             else
             {

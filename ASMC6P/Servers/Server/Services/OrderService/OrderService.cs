@@ -6,6 +6,8 @@ using ASMC6P.Shared.Entities;
 
 using Microsoft.EntityFrameworkCore;
 
+using System.Security.Claims;
+
 namespace ASMC6P.Server.Services.OrderService
 {
     public class OrderService : IOrderService
@@ -23,6 +25,7 @@ namespace ASMC6P.Server.Services.OrderService
             _cartService = cartService;
             _cartRepository = cartRepository;
             _httpContextAccessor = httpContextAccessor;
+            userId = Guid.Parse(_httpContextAccessor?.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier));
         }
 
         public async Task<OrderDetailsDto> GetOrderDetails(Guid orderId)
@@ -91,9 +94,8 @@ namespace ASMC6P.Server.Services.OrderService
             return response;
         }
 
-        public async Task<bool> PlaceOrder()
+        public async Task<bool> PlaceOrder(List<CartProductDto> products)
         {
-            var products = (await _cartService.GetDbCartProducts());
             decimal totalPrice = 0;
             products.ForEach(product => totalPrice += product.Price * product.Quantity);
 
@@ -115,7 +117,7 @@ namespace ASMC6P.Server.Services.OrderService
 
             await _ordersRepository.AddAsync(order);
 
-            var listCartItem = _cartRepository.AsQueryable().Where(ci => ci.UserId == userId).ToList();
+            var listCartItem = _cartRepository.AsQueryable().Where(ci => ci.UserId == userId && products.Select(c => c.ProductId).Contains(ci.ProductId)).ToList();
             await _cartRepository.RemoveRangeAsync(listCartItem);
 
             await _cartRepository.SaveChangesAsync();
