@@ -1,7 +1,9 @@
 ﻿@page "/{categoryUrl}"
 @page "/search/{searchText}/{page:int}"
 @using ASMC6P.Shared.Entities
-<h3>ListProduct</h3>
+<br>
+<br>
+<br>
 <MudGrid>
     @foreach (var product in list)
     {
@@ -64,11 +66,12 @@
     }
     private async Task AddToCart(ProductEntity product)
     {
-        var cartItem = new CartItemEntity()
-            {
-                ProductId = product.Id
-            };
+        if (! await _authentication.IsUserAuthenticated())  _navigationManager.NavigateTo("/login");
 
+        var cartItem = new CartItemEntity()
+        {
+                ProductId = product.Id
+        };
         await _cartService.AddToCart(cartItem);
     }
 }

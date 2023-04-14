@@ -4,10 +4,20 @@
 @using System.Text.Json
 @inject ISnackbar snackbar
 
-<h3>Cart</h3>
-
-<MudTable Items="@cartProducts" MultiSelection="true" Dense="false" Hover="true" ReadOnly="false" @bind-SelectedItems="selectedItems" CanCancelEdit="true" Filter="new Func<CartProductDto,bool>(FilterFunc)"
-          @bind-SelectedItem="selectedItem1" SortLabel="Sort By" CommitEditTooltip="Commit Edit" 
+<br>
+<br>
+<br>
+<div class="row">
+    <div class="col-4">
+        <MudButton Variant="Variant.Filled" Style="justify-items: left" Size="@Size.Large" Color="Color.Error" OnClick="RemoveItemCartItem"> Xóa </MudButton>
+    </div>
+    <div class="col-4"></div>
+    <div class="col-4">
+        <MudButton Variant="Variant.Filled" Style="justify-items: right" Size="@Size.Large" Color="Color.Success" OnClick="Order">Đặt hàng</MudButton>
+    </div>
+</div>
+<MudTable Items="@cartProducts" MultiSelection="true" Dense="false" Elevation="24" Hover="true" ReadOnly="false" @bind-SelectedItems="selectedItems" CanCancelEdit="true" Filter="new Func<CartProductDto,bool>(FilterFunc)"
+          @bind-SelectedItem="selectedItem1" SortLabel="Sort By" CommitEditTooltip="Commit Edit"
           OnCommitEditClick="@(() => snackbar.Add("Commit Edit Handler Invoked"))" RowEditPreview="BackupItem" RowEditCancel="ResetItemToOriginalValues"
           RowEditCommit="ItemHasBeenCommitted" IsEditRowSwitchingBlocked="false" ApplyButtonPosition="@applyButtonPosition" EditButtonPosition="@editButtonPosition" EditTrigger="@editTrigger">
     <ToolBarContent>
@@ -22,7 +32,7 @@
         <MudTh><MudTableSortLabel SortBy="new Func<CartProductDto, object>(x => x.Quantity)">Số lượng</MudTableSortLabel></MudTh>
     </HeaderContent>
     <RowTemplate>
-        <MudTd DataLabel="Ảnh"><MudImage Src="@context.ImageUrl" Style="height: 200px;width: 100px; margin: 1vi;"></MudImage></MudTd>
+        <MudTd DataLabel="Ảnh"><MudImage Src="@context.ImageUrl" Style="height: 100px;width: 75px; margin: 1vi; object-fit: contain"></MudImage></MudTd>
         <MudTd DataLabel="Tên">@context.Name</MudTd>
         <MudTd DataLabel="Giá">@context.Price</MudTd>
         <MudTd DataLabel="Số lượng">@context.Quantity</MudTd>
@@ -30,28 +40,25 @@
     <RowEditingTemplate>
         <MudTd DataLabel="Ảnh">
             <MudTextField @bind-Value="@context.ImageUrl" Required Disabled="true" />
-        </MudTd>
-        <MudTd DataLabel="Tên">
+            </MudTd>
+            <MudTd DataLabel="Tên">
             <MudTextField @bind-Value="@context.Name" Required Disabled="true" />
-        </MudTd>
-        <MudTd DataLabel="Giá">
-            <MudNumericField @bind-Value="@context.Price" Required  Disabled="true" />
-        </MudTd>
+            </MudTd>
+            <MudTd DataLabel="Giá">
+            <MudNumericField @bind-Value="@context.Price" Required Disabled="true" />
+            </MudTd>
         <MudTd DataLabel="Số lượng">
             <MudNumericField @bind-Value="@context.Quantity" Required Min="1" />
         </MudTd>
-    </RowEditingTemplate>
-    <PagerContent>
-        <MudTablePager />
-    </PagerContent>
-    <EditButtonContent Context="button">
-        <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="false" />
-    </EditButtonContent>
-   
-
+        </RowEditingTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+        <EditButtonContent Context="button">
+            <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="false" />
+        </EditButtonContent>
 </MudTable>
-        <MudButton Variant="Variant.Filled" Style="justify-items: left" Size="@Size.Large"  Color="Color.Error" OnClick="RemoveItemCartItem"> Xóa </MudButton>
-        <MudButton Variant="Variant.Filled" Style="justify-items: right" Size="@Size.Large"  Color="Color.Success" OnClick="Order">Đặt hàng</MudButton>
+
 
 @code {
     private List<string> editEvents = new();
@@ -69,7 +76,7 @@
         cartProducts = await _cartService.GetCartProducts();
     }
 
-    
+
 
     private void AddEditionEvent(string message)
     {
@@ -80,12 +87,12 @@
     private void BackupItem(object cartProductDto)
     {
         CartProductDtoBeforeEdit = new()
-        {
-            ImageUrl = ((CartProductDto)cartProductDto).ImageUrl,
-            Name = ((CartProductDto)cartProductDto).Name,
-            Price = ((CartProductDto)cartProductDto).Price,
-            Quantity = ((CartProductDto)cartProductDto).Quantity
-        };
+            {
+                ImageUrl = ((CartProductDto)cartProductDto).ImageUrl,
+                Name = ((CartProductDto)cartProductDto).Name,
+                Price = ((CartProductDto)cartProductDto).Price,
+                Quantity = ((CartProductDto)cartProductDto).Quantity
+            };
         AddEditionEvent($"RowEditPreview event: made a backup of CartProductDto {((CartProductDto)cartProductDto).Name}");
     }
 
@@ -96,6 +103,9 @@
             await _cartService.RemoveProductFromCart(VARIABLE.ProductId);
         }
         cartProducts = await _cartService.GetCartProducts();
+        StateHasChanged();
+        await _cartService.GetCartItemsCount();
+        
     }
 
     private async void ItemHasBeenCommitted(object cartProductDto)
@@ -129,6 +139,8 @@
 
     void Order()
     {
+        if (selectedItems.ToList() == null) _dialog.ShowMessageBox("Thông báo", "Bạn chưa chọn sản phẩm nào!", yesText: "Làm lại!", null, null, new DialogOptions() { CloseButton = true, FullWidth = true });
+        
         _cartService.SelectItems = selectedItems.ToList();
         string jsonString = JsonSerializer.Serialize(selectedItems.ToList());
         string url = "/create-order?objects=" + Uri.EscapeDataString(jsonString);

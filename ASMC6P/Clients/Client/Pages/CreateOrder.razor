@@ -6,9 +6,11 @@
 @using Microsoft.AspNetCore.WebUtilities
 @using Microsoft.EntityFrameworkCore.Storage
 
-<h3>Create Order</h3>
-
-<MudText Typo="Typo.h6"> thông tin khách hàng</MudText>
+<br>
+<br>
+<br>
+<MudText Typo="Typo.h6"> Thông tin khách hàng</MudText>
+<br />
 <MudText>
     Tên:
     <MudTextField @bind-Value="@user.DisplayName" Required Disabled="true" />
@@ -24,8 +26,18 @@
 
     <MudDivider DividerType="DividerType.Middle" />
 
-    <MudText Typo="Typo.h6"> Danh Sách Sản phẩm </MudText>
+<MudText Typo="Typo.h6"> Danh Sách Sản phẩm </MudText>
+<br>
 
+<div class="row">
+        <div class="col-10"></div>
+        <div class="col">
+            <MudButton Style="justify-content: right" Color="Color.Primary" OnClick="CreateNewOrder"> Đặt hóa đơn</MudButton>
+            <br>
+        </div>
+</div>
+
+<MudDivider DividerType="DividerType.Middle" />
 <MudTable Items="cartProduct">
 
     <HeaderContent>
@@ -36,7 +48,7 @@
     </HeaderContent>
 
     <RowTemplate>
-        <MudTd DataLabel="Ảnh"><MudImage Src="@context.ImageUrl" Style="height: 200px; width: 100px; margin: 1vi;"></MudImage></MudTd>
+        <MudTd DataLabel="Ảnh"><MudImage Src="@context.ImageUrl" Style="height: 100px; width: 75px; margin: 1vi; object-fit: contain"></MudImage></MudTd>
         <MudTd DataLabel="Tên">@context.Name</MudTd>
         <MudTd DataLabel="Giá">@context.Price</MudTd>
         <MudTd DataLabel="Số lượng">@context.Quantity</MudTd>
@@ -48,7 +60,7 @@
 
 </MudTable>
 
-    <MudButton Style="justify-content: end" Color="Color.Default" OnClick="CreateNewOrder"> Đặt hóa đơn</MudButton>
+  
     @code {
 
     UserDto user { get; set; } = new UserDto();
@@ -113,6 +125,6 @@
         {
             await _dialog.ShowMessageBox("Thông báo!", "Đặt hàng không thành công!", yesText: "Làm lại!", null, null, new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraExtraLarge });
         }
-
+        _cartService.OnChange += StateHasChanged;
     }
 }

@@ -8,6 +8,7 @@ public interface IAuthenticationService
 {
     public Task<UserDto> Login(LoginUserViewModel request);
     public Task<UserDto> RegisterUser(CreateUserViewModel request);
+    public Task<bool> Update(UpdateProfileVM resquest);
     public Task<UserDto> RefreshToken();
     string CreateToken(UserEntity user);
     RefreshTokenDto CreateRefreshToken();

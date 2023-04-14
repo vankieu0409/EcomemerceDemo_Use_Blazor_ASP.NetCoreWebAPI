@@ -62,6 +62,7 @@ public class AuthenticationService : IAuthenticationService
             var token = CreateToken(user);
             var refreshToken = CreateRefreshToken();
             SetRefreshToken(refreshToken, user);
+            userResult.Decriptions = user.Decriptions;
             userResult.Success = true;
             userResult.AccessToken = token;
             userResult.RefreshToken = refreshToken.Token;
@@ -79,11 +80,22 @@ public class AuthenticationService : IAuthenticationService
 
     }
 
+    public async Task<bool> Update(UpdateProfileVM resquest)
+    {
+        var userEntity = await _userManager.FindByIdAsync(resquest.Id.ToString());
+        _mapper.Map(resquest, userEntity);
+        if (userEntity == null) return false;
+
+        var result = await _userManager.UpdateAsync(userEntity);
+
+        return result.Succeeded;
+    }
     public async Task<UserDto> RegisterUser(CreateUserViewModel request)
     {
         var user = new UserEntity
         {
             Id = Guid.NewGuid(),
+            DisplayName = request.FullName,
             UserName = request.Email,
             NormalizedUserName = request.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
@@ -97,10 +109,13 @@ public class AuthenticationService : IAuthenticationService
             AccessFailedCount = 0,
             IsDeleted = false,
             ConcurrencyStamp = Guid.NewGuid().ToString(),
-            TwoFactorEnabled = false
+            TwoFactorEnabled = false,
+            Decriptions = "",
+            Address = "",
+            Image = ""
         };
         await _userManager.CreateAsync(user, request.Password);
-        await _userManager.AddToRoleAsync(user, "Customer");
+        await _userManager.AddToRoleAsync(user, request.Role);
 
 
         await _context.SaveChangesAsync();
@@ -137,8 +152,8 @@ public class AuthenticationService : IAuthenticationService
         {
             Id = user.Id,
             Image = user.Image,
-            Descreption = user.DisplayName,
-            DisplayName = user.Decriptions,
+            Decriptions = user.Decriptions,
+            DisplayName = user.DisplayName,
             UserName = user.UserName,
             Success = true,
             AccessToken = token,

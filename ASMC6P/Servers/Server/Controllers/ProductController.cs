@@ -14,13 +14,15 @@ namespace ASMC6P.Server.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IWebHostEnvironment _env;
 
-        public ProductController(IProductService productService)
+        public ProductController(IProductService productService, IWebHostEnvironment env)
         {
             _productService = productService;
+            _env = env;
         }
 
-        [HttpGet("admin"), Authorize(Roles = "Admin")]
+        [HttpGet("admin"), Authorize(Roles = "Administrator,Employee")]
         public async Task<ActionResult<List<ProductEntity>>> GetAdminProducts(ODataQueryOptions<ProductEntity> queryOptions)
         {
             var result = await _productService.GetAdminProducts();
@@ -28,21 +30,21 @@ namespace ASMC6P.Server.Controllers
             return Ok(castedResult);
         }
 
-        [HttpPost, Authorize(Roles = "Admin")]
+        [HttpPost, Authorize(Roles = "Administrator,Employee")]
         public async Task<ActionResult<ProductEntity>> CreateProduct(ProductEntity product)
         {
             var result = await _productService.CreateProduct(product);
             return Ok(result);
         }
 
-        [HttpPut, Authorize(Roles = "Admin")]
+        [HttpPut, Authorize(Roles = "Administrator,Employee")]
         public async Task<ActionResult<ProductEntity>> UpdateProduct(ProductEntity product)
         {
             var result = await _productService.UpdateProduct(product);
             return Ok(result);
         }
 
-        [HttpDelete("{id}"), Authorize(Roles = "Admin")]
+        [HttpDelete("{id}"), Authorize(Roles = "Administrator,Employee")]
         public async Task<ActionResult<bool>> DeleteProduct(Guid id)
         {
             var result = await _productService.DeleteProduct(id);
@@ -93,6 +95,25 @@ namespace ASMC6P.Server.Controllers
             var result = await _productService.GetFeaturedProducts();
             var castedResult = queryOptions.ApplyTo(result.AsQueryable()).Cast<ProductEntity>();
             return Ok(castedResult);
+        }
+
+        [HttpPost("upload")]
+        public async Task<ActionResult<List<string>>> UploadAsync(List<IFormFile> files)
+        {
+            var strings = new List<string>();
+            foreach (var file in files)
+            {
+                var fileName = Path.GetFileName(file.FileName);
+                //var path = Path.GetTempFileName();
+                var path = Path.Combine(_env.ContentRootPath, "Unitities\\Images\\", fileName.Replace(" ", ""));
+                await using FileStream fs = new(path, FileMode.Create);
+                await file.CopyToAsync(fs);
+                var imagePath = $"\\Unitities\\Images\\{fileName}";
+                strings.Add(path);
+            }
+
+
+            return Ok(strings);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using ASMC6P.Server.Services.CategoryService;
-using ASMC6P.Shared.Dtos;
 using ASMC6P.Shared.Entities;
 
 using Microsoft.AspNetCore.Authorization;
@@ -25,28 +24,28 @@ namespace BlazorEcommerce.Server.Controllers
             return Ok(result);
         }
 
-        [HttpGet("admin"), Authorize(Roles = "Admin")]
+        [HttpGet("admin"), Authorize(Roles = "Administrator,Employee")]
         public async Task<ActionResult<List<CategoryEntity>>> GetAdminCategories()
         {
             var result = await _categoryService.GetAdminCategories();
             return Ok(result);
         }
 
-        [HttpDelete("admin/{id}"), Authorize(Roles = "Admin")]
+        [HttpDelete("admin/{id}"), Authorize(Roles = "Administrator,Employee")]
         public async Task<ActionResult<List<CategoryEntity>>> DeleteCategory(Guid id)
         {
             var result = await _categoryService.DeleteCategory(id);
             return Ok(result);
         }
 
-        [HttpPost("admin"), Authorize(Roles = "Admin")]
+        [HttpPost("admin"), Authorize(Roles = "Administrator,Employee")]
         public async Task<ActionResult<List<CategoryEntity>>> AddCategory(CategoryEntity category)
         {
             var result = await _categoryService.AddCategory(category);
             return Ok(result);
         }
 
-        [HttpPut("admin"), Authorize(Roles = "Admin")]
+        [HttpPut("admin"), Authorize(Roles = "Administrator,Employee")]
         public async Task<ActionResult<List<CategoryEntity>>> UpdateCategory(CategoryEntity category)
         {
             var result = await _categoryService.UpdateCategory(category);

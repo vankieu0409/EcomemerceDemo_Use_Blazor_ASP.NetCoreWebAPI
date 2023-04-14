@@ -31,9 +31,9 @@ namespace ASMC6P.Client.Services.ProductService
             return newProduct;
         }
 
-        public async Task DeleteProduct(ProductEntity product)
+        public async Task DeleteProduct(Guid product)
         {
-            var result = await _http.DeleteAsync($"api/product/{product.Id}");
+            var result = await _http.DeleteAsync($"api/product/{product}");
         }
 
         public async Task<List<ProductEntity>> GetAdminProducts()

@@ -41,5 +41,9 @@
     </Compile>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Unitities\Images\" />
+  </ItemGroup>
+
 
 </Project>

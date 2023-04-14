@@ -3,22 +3,23 @@
     <MudText Typo="Typo.h6">Settings</MudText>
 </MudDrawerHeader>
 <MudNavMenu>
-    <MudNavLink Href="#" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AccountBox">Profile</MudNavLink>
-    <AuthorizeView Roles="Adminnitrator">
-
+    <MudNavLink Href="/profile" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AccountBox">Profile</MudNavLink>
+    <AuthorizeView Roles="Administrator">
+        <MudNavLink Href="/productmanager" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.ProductionQuantityLimits">Product Manager</MudNavLink>
+        <MudNavLink Href="#" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Category" Disabled="true">Product Manager</MudNavLink>
     </AuthorizeView>
-    @*@if (@badgeContent != null)
-    {*@<MudBadge Origin="Origin.CenterRight" Content="@badgeContent" Color="Color.Error" Overlap="false" Dot="false" Bordered="true">
+    @if (@badgeContent != 0)
+    {
         <MudNavLink Href="/cart" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.ShoppingCart">
-            Giỏ hàng     
+            Giỏ hàng
+            <MudBadge Origin="Origin.TopRight" Content="@badgeContent" Color="Color.Error" Overlap="false" Dot="false" Bordered="true"></MudBadge>
         </MudNavLink>
-    </MudBadge>
-    @*  }
+    }
     else
     {
-    <MudNavLink Href="/cart" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.ShoppingCart">Giỏ hàng</MudNavLink>
-    }*@
-    <MudNavLink Href="#" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.History">Order History</MudNavLink>
+        <MudNavLink Href="/cart" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.ShoppingCart">Giỏ hàng</MudNavLink>
+    }
+    <MudNavLink Href="/order-history" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.History">Lịch sử mua hàng</MudNavLink>
     <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Logout" OnClick="BeginSignOut">Đăng xuất</MudNavLink>
 </MudNavMenu>
 
@@ -50,13 +51,13 @@
     {
         while (true)
         {
-    // Lấy số lượng sản phẩm trong giỏ hàng
+            // Lấy số lượng sản phẩm trong giỏ hàng
             badgeContent = GetCartItemsCount();
 
-    // Cập nhật badge content
+            // Cập nhật badge content
             await InvokeAsync(() => { StateHasChanged(); });
 
-    // Đợi 1 giây trước khi cập nhật lại badge content
+            // Đợi 1 giây trước khi cập nhật lại badge content
             await Task.Delay(1000);
         }
     }

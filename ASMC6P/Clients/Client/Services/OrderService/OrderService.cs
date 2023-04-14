@@ -23,9 +23,9 @@ namespace ASMC6P.Client.Services.OrderService
             _navigationManager = navigationManager;
         }
 
-        public async Task<OrderDetailsDto> GetOrderDetails(Guid orderId)
+        public async Task<OrderDto> GetOrderDetails(Guid orderId)
         {
-            var result = await _http.GetFromJsonAsync<OrderDetailsDto>($"api/order/{orderId}");
+            var result = await _http.GetFromJsonAsync<OrderDto>($"api/order/{orderId}");
             return result;
         }
 

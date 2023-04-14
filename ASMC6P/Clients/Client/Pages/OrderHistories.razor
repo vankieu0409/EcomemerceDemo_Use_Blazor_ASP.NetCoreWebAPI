@@ -1,0 +1,50 @@
+﻿@page "/order-history"
+@using ASMC6P.Shared.Dtos
+
+<PageTitle>Order Histories</PageTitle>
+<br>
+<br>
+<br>
+<MudTable Items="@OrderCollection" Hover="true" Breakpoint="Breakpoint.Sm" @ref="mudTable" OnRowClick="RowClickEvent" T="OrderOverviewDto">
+    <HeaderContent>
+        <MudTh>Ảnh</MudTh>
+        <MudTh>Các sản phẩm</MudTh>
+        <MudTh>Ngày Mua</MudTh>
+        <MudTh>Tổng tiền</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Ảnh">
+            <MudImage Src="@context.ProductImageUrl" Style="height: 200px; width: 150px; margin: 1vi; object-fit: contain">
+            </MudImage>
+        </MudTd>
+        <MudTd DataLabel="Các Sản Phẩm">@context.Product</MudTd>
+        <MudTd DataLabel="Ngày Mua">@context.OrderDate</MudTd>
+        <MudTd DataLabel="STổng tiền">@context.TotalPrice</MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+
+    [Parameter]
+    public string userId { get; set; }
+    private int selectedRowNumber = -1;
+    private MudTable<OrderOverviewDto> mudTable;
+    OrderDto order = new OrderDto();
+    List<OrderOverviewDto> OrderCollection = new List<OrderOverviewDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        OrderCollection = await _orderService.GetOrders();
+    }
+
+    private async Task RowClickEvent(TableRowClickEventArgs<OrderOverviewDto> tableRowClickEventArgs)
+    {
+        order = await _orderService.GetOrderDetails(tableRowClickEventArgs.Item.Id);
+        DialogParameters pram = new DialogParameters();
+        pram.Add("Order", order);
+
+        _dialog.Show<DialogOrderDetail>("Hóa đơn Chi Tiết", pram, new DialogOptions() { CloseButton = true, FullWidth = true });
+
+    }
+
+}

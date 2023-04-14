@@ -28,9 +28,9 @@ namespace ASMC6P.Server.Services.OrderService
             userId = Guid.Parse(_httpContextAccessor?.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier));
         }
 
-        public async Task<OrderDetailsDto> GetOrderDetails(Guid orderId)
+        public async Task<OrderDto> GetOrderDetails(Guid orderId)
         {
-            var response = new OrderDetailsDto();
+            var response = new OrderDto();
             var order = await _ordersRepository.AsQueryable()
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Product)
@@ -44,7 +44,7 @@ namespace ASMC6P.Server.Services.OrderService
                 return response;
             }
 
-            var orderDetailsResponse = new OrderDetailsDto
+            var orderDetailsResponse = new OrderDto
             {
                 OrderDate = order.OrderDate,
                 TotalPrice = order.TotalPrice,

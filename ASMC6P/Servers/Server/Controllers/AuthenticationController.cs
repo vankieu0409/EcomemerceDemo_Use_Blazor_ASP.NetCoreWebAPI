@@ -38,10 +38,21 @@ namespace ASMC6P.Server.Controllers
             {
                 return Ok(response);
             }
-
-
             return BadRequest(response);
         }
+
+        [HttpPut("update")]
+        [AllowAnonymous]
+        public async Task<ActionResult<UserDto>> UpdateAsync(UpdateProfileVM request)
+        {
+            var response = await _authenticationService.Update(request);
+            if (response)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
+
         [HttpGet("refresh-token")]
         [Authorize]
         public async Task<ActionResult<UserDto>> RefreshToken()

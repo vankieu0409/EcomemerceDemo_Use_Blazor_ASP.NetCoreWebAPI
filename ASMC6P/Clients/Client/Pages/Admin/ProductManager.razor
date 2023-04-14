@@ -1,0 +1,209 @@
+﻿@page "/productmanager"
+@using ASMC6P.Shared.Dtos
+@using ASMC6P.Shared.Entities
+@inject ISnackbar snackbar
+
+<div class="row" style="height: 40px" ></div>
+<div class="row">
+    <div class="col-2 justify-content-lg-start"><MudButton IconSize="Size.Large" Variant="Variant.Filled" ButtonType="ButtonType.Submit" Color="Color.Primary" OnClick="CreateProduct"> Thêm </MudButton></div>
+    <div class="col"></div>
+    <div class="col-2 justify-content-end"><MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Error" OnClick="RemoveItemCartItem"> Xóa </MudButton></div>
+</div>
+
+<MudTable Items="@Products" MultiSelection="true" Dense="false" Hover="true" ReadOnly="false" @bind-SelectedItems="selectedItems" CanCancelEdit="true" Filter="new Func<ProductAdminDto, bool>(FilterFunc)"
+          @bind-SelectedItem="selectedItem1" SortLabel="Sort By" CommitEditTooltip="Commit Edit"
+          OnCommitEditClick="@(() => snackbar.Add("Commit Edit Handler Invoked"))" RowEditPreview="BackupItem" RowEditCancel="ResetItemToOriginalValues"
+          RowEditCommit="ItemHasBeenCommitted" IsEditRowSwitchingBlocked="false" ApplyButtonPosition="@applyButtonPosition" EditButtonPosition="@editButtonPosition" EditTrigger="@editTrigger">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">ProductCollection</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<ProductAdminDto, object>(x => x.Name)">Ảnh</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<ProductAdminDto, object>(x => x.Name)">Tên</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<ProductAdminDto, object>(x => x.OriginalPrice)">Giá</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<ProductAdminDto, object>(x => x.Quantity)">Số lượng</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<ProductAdminDto, object>(x => x.CategoryName)">Danh mục</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<ProductAdminDto, object>(x => x.Description)">Mô tả</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<ProductAdminDto, object>(x => x.IsDeleted)">Không bán</MudTableSortLabel></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Ảnh"><MudImage Src="@context.Image" Style="height: 200px; width: 100px; margin: 1vi;"></MudImage></MudTd>
+        <MudTd DataLabel="Tên">@context.Name</MudTd>
+        <MudTd DataLabel="Giá">@context.OriginalPrice</MudTd>
+        <MudTd DataLabel="Số lượng">@context.Quantity</MudTd>
+        <MudTd DataLabel="Danh Mục">@context.CategoryName</MudTd>
+        <MudTd DataLabel="Mô tả">@context.Description</MudTd>
+        <MudTd DataLabel="Không bán"><MudSwitch T="bool" Color="Color.Primary" @bind-Checked="@context.IsDeleted" /></MudTd>
+    </RowTemplate>
+    <RowEditingTemplate>
+        <MudTd DataLabel="Ảnh">
+            <MudTextField @bind-Value="@context.Image" Required Disabled="true" />
+            </MudTd>
+            <MudTd DataLabel="Tên">
+            <MudTextField @bind-Value="@context.Name" Required />
+        </MudTd>
+        <MudTd DataLabel="Giá">
+            <MudNumericField @bind-Value="@context.OriginalPrice" Required />
+        </MudTd>
+        <MudTd DataLabel="Số lượng">
+            <MudNumericField @bind-Value="@context.Quantity" Required Min="1" />
+            </MudTd>
+            <MudTd DataLabel="Danh mục">
+                <MudSelect T="string" @bind-Value="@context.CategoryName">
+                    @foreach (var item in Categories)
+                    {
+                    <MudSelectItem Value="item.Name"> @item.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudTd>
+            <MudTd DataLabel="Mô tả">
+            <MudTextField @bind-Value="@context.Description" Required />
+        </MudTd>
+        <MudTd DataLabel="Không bán">
+            <MudSwitch T="bool" Color="Color.Primary" @bind-Checked="@context.IsDeleted" />
+        </MudTd>
+    </RowEditingTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+    <EditButtonContent Context="button">
+        <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" Class="pa-0" OnClick="@button.ButtonAction" Disabled="false" />
+    </EditButtonContent>
+</MudTable>
+
+
+@code {
+    private List<string> editEvents = new();
+    private string searchString = "";
+    private ProductAdminDto selectedItem1 = null;
+    private ProductAdminDto ProductAdminDtoBeforeEdit = null;
+    private HashSet<ProductAdminDto> selectedItems = new HashSet<ProductAdminDto>();
+    private TableApplyButtonPosition applyButtonPosition = TableApplyButtonPosition.End;
+    private TableEditButtonPosition editButtonPosition = TableEditButtonPosition.End;
+    private TableEditTrigger editTrigger = TableEditTrigger.RowClick;
+    private List<ProductAdminDto> Products { get; set; } = new List<ProductAdminDto>();
+    private List<CategoryEntity> Categories { get; set; } = new List<CategoryEntity>();
+    List<string> categoryName { get; set; } = new List<string>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetData();
+    }
+
+
+
+    private void AddEditionEvent(string message)
+    {
+        editEvents.Add(message);
+        StateHasChanged();
+    }
+
+    private void BackupItem(object ProductAdminDto)
+    {
+        ProductAdminDtoBeforeEdit = new()
+            {
+                Id = ((ProductAdminDto)ProductAdminDto).Id,
+                Image = ((ProductAdminDto)ProductAdminDto).Image,
+                Name = ((ProductAdminDto)ProductAdminDto).Name,
+                CategoryName = ((ProductAdminDto)ProductAdminDto).CategoryName,
+                UploadedDate = ((ProductAdminDto)ProductAdminDto).UploadedDate,
+                OriginalPrice = ((ProductAdminDto)ProductAdminDto).OriginalPrice,
+                Description = ((ProductAdminDto)ProductAdminDto).Description,
+                Quantity = ((ProductAdminDto)ProductAdminDto).Quantity,
+                IsDeleted = ((ProductAdminDto)ProductAdminDto).IsDeleted
+            };
+        AddEditionEvent($"RowEditPreview event: made a backup of ProductAdminDto {((ProductAdminDto)ProductAdminDto).Name}");
+    }
+
+    private async void RemoveItemCartItem()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Bạn chắc chắn muốn xóa những sản phẩm đã chọn??");
+        parameters.Add("ButtonRight", "Triển đi!");
+        parameters.Add("ButtonLeft", "Để xem lại!");
+        var confirm = await _dialog.Show<Dialog>("Thông báo", parameters, new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraExtraLarge }).Result;
+        if (!confirm.Canceled)
+        {
+            foreach (var VARIABLE in selectedItems.ToList())
+            {
+                await _productService.DeleteProduct(VARIABLE.Id);
+            }
+        }
+
+        await GetData();
+        StateHasChanged();
+    }
+
+    private async void ItemHasBeenCommitted(object ProductAdminDto)
+    {
+        var temp = ((ProductAdminDto)ProductAdminDto).CategoryName;
+        var id = Categories.Where(c => c.Name == temp).Select(c => c.Id).FirstOrDefault();
+        var entity = new ProductEntity()
+            {
+                Id = ((ProductAdminDto)ProductAdminDto).Id,
+                Image = ((ProductAdminDto)ProductAdminDto).Image,
+                Name = ((ProductAdminDto)ProductAdminDto).Name,
+                CategoryId = id,
+                UploadedDate = ((ProductAdminDto)ProductAdminDto).UploadedDate,
+                OriginalPrice = ((ProductAdminDto)ProductAdminDto).OriginalPrice,
+                Quantity = ((ProductAdminDto)ProductAdminDto).Quantity,
+                Description = ((ProductAdminDto)ProductAdminDto).Description,
+                IsDeleted = ((ProductAdminDto)ProductAdminDto).IsDeleted
+            };
+        await _productService.UpdateProduct(entity);
+        await GetData();
+        AddEditionEvent($"RowEditCommit event: Changes to ProductAdminDto {((ProductAdminDto)ProductAdminDto).Name} committed");
+        StateHasChanged();
+    }
+
+    private void ResetItemToOriginalValues(object ProductAdminDto)
+    {
+        ((ProductAdminDto)ProductAdminDto).Id = ProductAdminDtoBeforeEdit.Id;
+        ((ProductAdminDto)ProductAdminDto).Image = ProductAdminDtoBeforeEdit.Image;
+        ((ProductAdminDto)ProductAdminDto).Name = ProductAdminDtoBeforeEdit.Name;
+        ((ProductAdminDto)ProductAdminDto).Description = ProductAdminDtoBeforeEdit.Description;
+        ((ProductAdminDto)ProductAdminDto).CategoryName = ProductAdminDtoBeforeEdit.CategoryName;
+        ((ProductAdminDto)ProductAdminDto).UploadedDate = ProductAdminDtoBeforeEdit.UploadedDate;
+        ((ProductAdminDto)ProductAdminDto).OriginalPrice = ProductAdminDtoBeforeEdit.OriginalPrice;
+        ((ProductAdminDto)ProductAdminDto).Quantity = ProductAdminDtoBeforeEdit.Quantity;
+        ((ProductAdminDto)ProductAdminDto).IsDeleted = ProductAdminDtoBeforeEdit.IsDeleted;
+        AddEditionEvent($"RowEditCancel event: Editing of ProductAdminDto {((ProductAdminDto)ProductAdminDto).Name} canceled");
+    }
+
+    private bool FilterFunc(ProductAdminDto ProductAdminDto)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (ProductAdminDto.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if ($"{ProductAdminDto.OriginalPrice} {ProductAdminDto.Quantity}".Contains(searchString))
+            return true;
+        return false;
+    }
+
+    async Task GetData()
+    {
+        var listProduct = await _productService.GetAdminProducts();
+        Categories = await _categoryService.GetCategories();
+        categoryName = Categories.Select(c => c.Name).ToList();
+        Products = listProduct.Join(Categories, pro => pro.CategoryId, cat => cat.Id, (pro, cat) => new ProductAdminDto()
+            {
+                Id = pro.Id,
+                Image = pro.Image,
+                Name = pro.Name,
+                OriginalPrice = pro.OriginalPrice,
+                Quantity = pro.Quantity,
+                CategoryName = cat.Name,
+                Description = pro.Description,
+                IsDeleted = pro.IsDeleted
+            }).ToList();
+    }
+
+    void CreateProduct()
+    {
+        _navigationManager.NavigateTo("/create-product");
+    }
+}

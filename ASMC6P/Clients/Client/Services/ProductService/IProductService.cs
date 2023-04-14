@@ -18,6 +18,6 @@ namespace ASMC6P.Client.Services.ProductService
         Task<List<ProductEntity>> GetAdminProducts();
         Task<ProductEntity> CreateProduct(ProductEntity product);
         Task<ProductEntity> UpdateProduct(ProductEntity product);
-        Task DeleteProduct(ProductEntity product);
+        Task DeleteProduct(Guid product);
     }
 }

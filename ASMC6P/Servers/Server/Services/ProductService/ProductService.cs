@@ -30,12 +30,12 @@ namespace ASMC6P.Server.Services.ProductService
 
         public async Task<bool> DeleteProduct(Guid productId)
         {
-            var dbProduct = _productRepository.AsQueryable().FirstOrDefault(c => c.Id == productId, null);
+            var dbProduct = _productRepository.AsQueryable().FirstOrDefault(c => c.Id == productId);
             if (dbProduct == null)
             {
                 return false;
             }
-
+            dbProduct.IsDeleted = true;
             await _productRepository.RemoveAsync(dbProduct);
 
             await _productRepository.SaveChangesAsync();
@@ -44,11 +44,7 @@ namespace ASMC6P.Server.Services.ProductService
 
         public async Task<List<ProductEntity>> GetAdminProducts()
         {
-            var response = await _productRepository.AsQueryable()
-                .Where(p => !p.IsDeleted)
-                .ToListAsync();
-
-
+            var response = await _productRepository.AsQueryable().ToListAsync();
             return response;
         }
 
@@ -180,6 +176,10 @@ namespace ASMC6P.Server.Services.ProductService
             dbProduct.Name = product.Name;
             dbProduct.Description = product.Description;
             dbProduct.CategoryId = product.CategoryId;
+            dbProduct.IsDeleted = product.IsDeleted;
+            dbProduct.Quantity = product.Quantity;
+            dbProduct.OriginalPrice = product.OriginalPrice;
+            dbProduct.NewPrice = product.NewPrice;
 
 
             //foreach (var variant in product.Variants)
@@ -201,7 +201,7 @@ namespace ASMC6P.Server.Services.ProductService
             //        dbVariant.IsDeleted = variant.IsDeleted;
             //    }
             //}
-
+            await _productRepository.UpdateAsync(dbProduct);
             await _productRepository.SaveChangesAsync();
             return product;
         }

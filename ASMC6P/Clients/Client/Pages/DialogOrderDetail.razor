@@ -1,0 +1,38 @@
+﻿@using ASMC6P.Shared.Dtos
+<MudDialog Style="max-width: fit-content">
+    <DialogContent>
+        <MudTable Items="@Order.Products" Hover="true" Breakpoint="Breakpoint.Sm" T="OrderDetailsProductDto">
+            <HeaderContent>
+                <MudTh>Ảnh</MudTh>
+                <MudTh>Sản Phẩm</MudTh>
+                <MudTh>Số lượng</MudTh>
+                <MudTh>Giá</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Ảnh"><MudImage Src="@context.ImageUrl" Style="height: 150px; width: 150px; margin: 1vi; object-fit: contain">
+                </MudImage></MudTd>
+                <MudTd DataLabel="Sản Phẩm">@context.Title</MudTd>
+                <MudTd DataLabel="Số lượng">@context.Quantity</MudTd>
+                <MudTd DataLabel="Giá">@context.TotalPrice</MudTd>
+            </RowTemplate>
+            <FooterContent>
+                <div class="row">
+                    <MudText Class="col-4 justify-content-center"> Tổng tiền: @Order.TotalPrice </MudText>
+                    <div class="col-4"></div>
+                    <MudText Class="col-4 justify-content-center"> Ngày mua: @Order.OrderDate </MudText>
+                </div>
+            </FooterContent>
+        </MudTable>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+@code {
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public OrderDto Order { get; set; }
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+}

@@ -6,6 +6,6 @@ namespace ASMC6P.Server.Services.OrderService
     {
         Task<bool> PlaceOrder(List<CartProductDto> products);
         Task<List<OrderOverviewDto>> GetOrders();
-        Task<OrderDetailsDto> GetOrderDetails(Guid orderId);
+        Task<OrderDto> GetOrderDetails(Guid orderId);
     }
 }

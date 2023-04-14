@@ -1,0 +1,79 @@
+﻿@page "/profile"
+@using Microsoft.AspNetCore.Components
+@using ASMC6P.Shared.Dtos
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Internal
+@using System.Net.Http.Headers
+@using ASMC6P.Shared.Entities
+@using ASMC6P.Shared.ViewModels
+
+<PageTitle> Profile</PageTitle>
+
+<MudForm @onsubmit="HandleValidSubmit">
+    <div class="row">
+        <div class="col-4">
+            <MudCard Class="ma-2">
+                <MudCardContent>
+                    <MudImage Src="@Profile.Image" Style="height: 200px; width: 200px; margin: 1vi; object-fit: contain" />
+                </MudCardContent>
+            </MudCard>
+            <InputFile OnChange="OnInputFileChange">
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Default" Style="justify-content: center">
+                    <MudFab HtmlTag="label"
+                            Color="Color.Secondary"
+                            Icon="@Icons.Material.Filled.Image"
+                            Label="Load picture" />
+                </MudButton>
+            </InputFile>
+        </div>
+        <div class="col">
+            <MudTextField Label="Tên" @bind-Value="@Profile.DisplayName"    Required="true" />
+            <MudTextField Label="Mô tả" @bind-Value="@Profile.Decriptions" Required="false" />
+            <MudTextField Label="Địa Chỉ" @bind-Value="@Profile.Address" Required="true" />
+            <MudTextField Label="Số Điện thoại" @bind-Value="@Profile.PhoneNumber" Required="true" />
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HandleValidSubmit">Cập nhật</MudButton>
+        </div>
+    </div>
+</MudForm>
+
+@code {
+    private UpdateProfileVM Profile = new UpdateProfileVM();
+    LoginUserViewModel login = new LoginUserViewModel();
+   
+    protected override void OnInitialized()
+    {
+        var userDto = _localStorageSync.GetItem<UserDto>("user");
+        Profile = new UpdateProfileVM()
+        {
+            Id = userDto.Id,
+            UserName = userDto.UserName,
+            DisplayName = userDto.DisplayName,
+            Image = userDto.Image,
+            Address = userDto.Address,
+            PhoneNumber = userDto.PhoneNumber,
+            Decriptions = userDto.Decriptions
+        };
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var c = Profile;
+        var a = await _authentication.Update(Profile);
+
+        if (a != null) {await _authentication.RefreshToken();await _dialog.ShowMessageBox("Thông báo", "thêm thành Công!", yesText: "oke");_navigationManager.NavigateTo("/");}
+        else await _dialog.ShowMessageBox("Thông báo", "Thêm thành Không Công!", yesText: "làm lại!");
+    }
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        var format = "image/png";
+        foreach (var image in e.GetMultipleFiles(int.MaxValue))
+        {
+            var resizedImage = await image.RequestImageFileAsync(format, 200, 200);
+            var buffer = new byte[resizedImage.Size];
+            await resizedImage.OpenReadStream().ReadAsync(buffer);
+            var imageData = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
+            Profile.Image = imageData;
+        }
+    }
+}

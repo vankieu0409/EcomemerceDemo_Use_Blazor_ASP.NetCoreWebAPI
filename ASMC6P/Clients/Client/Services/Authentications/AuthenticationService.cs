@@ -45,7 +45,7 @@ public class AuthenticationService : IAuthenticationService
 
     public async Task<bool> RegiterService(CreateUserViewModel viewModel)
     {
-        viewModel.Role = "Customers";
+        viewModel.Role = "CUSTOMER";
         var result = await _httpClient.PostAsJsonAsync("api/Authentication/register", viewModel);
         return await Task.FromResult(result.IsSuccessStatusCode);
     }
@@ -55,7 +55,11 @@ public class AuthenticationService : IAuthenticationService
         return result;
     }
 
-
+    public async Task<bool> Update(UpdateProfileVM vm)
+    {
+        var result = await _httpClient.PutAsJsonAsync("api/Authentication/update", vm);
+        return result.IsSuccessStatusCode;
+    }
     public async Task<HttpResponseMessage> RefreshToken()
     {
 

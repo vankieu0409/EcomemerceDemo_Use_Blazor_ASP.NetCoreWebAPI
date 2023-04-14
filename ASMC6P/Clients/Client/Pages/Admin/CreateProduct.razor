@@ -1,0 +1,81 @@
+﻿@page "/create-product"
+@using Microsoft.AspNetCore.Components
+@using ASMC6P.Shared.Dtos
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Internal
+@using System.Net.Http.Headers
+@using ASMC6P.Shared.Entities
+
+<PageTitle> Create Product</PageTitle>
+
+<MudForm @onsubmit="HandleValidSubmit">
+    <div class="row">
+        <div class="col-4">
+            <MudImage Src="@Product.Image" Style="height: 200px; width: 150px; margin: 1vi; object-fit: contain ">
+            </MudImage>
+            <InputFile OnChange="OnInputFileChange">
+                <MudButton ButtonType="ButtonType.Submit" Color="Color.Default" Style="justify-content: center">
+                    <MudFab HtmlTag="label"
+                            Color="Color.Secondary"
+                            Icon="@Icons.Material.Filled.Image"
+                            Label="Load picture" />
+                </MudButton>
+            </InputFile>
+        </div>
+        <div class="col">
+            <MudTextField Label="Name" @bind-Value="@Product.Name" Required="true" />
+            <MudSelect T="string" SelectedValues="CategryNames" Label="Category" @bind-Value="@Product.CategoryName" />
+            <MudTextField Label="Original Price" @bind-Value="@Product.OriginalPrice" Required="true" InputType="InputType.Number" />
+            <MudTextField Label="New Price" @bind-Value="@Product.NewPrice" InputType="InputType.Number" />
+            <MudTextField Label="Description" @bind-Value="@Product.Description" Required="true" />
+            <MudTextField Label="Quantity" @bind-Value="@Product.Quantity" Required="true" InputType="InputType.Number" />
+            <MudSwitch Color="Color.Primary" Label="Is Deleted" @bind-Checked="@Product.IsDeleted" />
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="HandleValidSubmit">Create Product</MudButton>
+        </div>
+    </div>
+</MudForm>
+
+@code {
+    private ProductAdminDto Product = new ProductAdminDto();
+    private List<string> CategryNames = null;
+    private List<CategoryEntity> Categrys = null;
+    private List<string> fileNames = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Categrys = await _categoryService.GetCategories();
+        CategryNames = Categrys.Select(c => c.Name).ToList();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var producEntity = new ProductEntity()
+        {
+            Id = Product.Id,
+            Image = Product.Image,
+            Name = Product.Name,
+            OriginalPrice = Product.OriginalPrice,
+            Quantity = Product.Quantity,
+            CategoryId = Categrys.Where(c => c.Name == Product.CategoryName).Select(c => c.Id).FirstOrDefault(),
+            Description = Product.Description,
+            IsDeleted = Product.IsDeleted
+        };
+        var a = await _productService.CreateProduct(producEntity);
+        if (a != null) await _dialog.ShowMessageBox("Thông báo", "thêm thành Công!", yesText: "oke");
+        else await _dialog.ShowMessageBox("Thông báo", "Thêm thành Không Công!", yesText: "làm lại!");
+    }
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+        var format = "image/png";
+        foreach (var image in e.GetMultipleFiles(int.MaxValue))
+        {
+            var resizedImage = await image.RequestImageFileAsync(format, 200, 200);
+            var buffer = new byte[resizedImage.Size];
+            await resizedImage.OpenReadStream().ReadAsync(buffer);
+            var imageData = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
+            Product.Image = imageData;
+        }
+    }
+
+}
