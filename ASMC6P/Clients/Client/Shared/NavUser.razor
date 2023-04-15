@@ -4,7 +4,7 @@
 </MudDrawerHeader>
 <MudNavMenu>
     <MudNavLink Href="/profile" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AccountBox">Profile</MudNavLink>
-    <AuthorizeView Roles="Administrator">
+    <AuthorizeView Roles="ADIMINISTRATOR">
         <MudNavLink Href="/productmanager" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.ProductionQuantityLimits">Product Manager</MudNavLink>
         <MudNavLink Href="#" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Category" Disabled="true">Product Manager</MudNavLink>
     </AuthorizeView>
