@@ -17,8 +17,6 @@ public class ApplicationDbContext : IdentityDbContext<UserEntity, RoleEntity, Gu
     {
         ChangeTracker.LazyLoadingEnabled = false;
         ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-        ChangeTracker.LazyLoadingEnabled = false;
-        ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
 
     }
 
