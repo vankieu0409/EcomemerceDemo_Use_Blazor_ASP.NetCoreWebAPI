@@ -3,10 +3,10 @@
     <MudText Typo="Typo.h6">Settings</MudText>
 </MudDrawerHeader>
 <MudNavMenu>
-    <MudNavLink Href="/profile" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AccountBox">Profile</MudNavLink>
+    <MudNavLink Href="/profile" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AccountBox">Thông tin cá nhân</MudNavLink>
     <AuthorizeView Roles="ADIMINISTRATOR">
-        <MudNavLink Href="/productmanager" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.ProductionQuantityLimits">Product Manager</MudNavLink>
-        <MudNavLink Href="#" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Category" Disabled="true">Product Manager</MudNavLink>
+        <MudNavLink Href="/productmanager" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.ProductionQuantityLimits">Quản Lý Sản Phẩm</MudNavLink>
+        <MudNavLink Href="#" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Category" Disabled="true">Quản lý Danh Mục</MudNavLink>
     </AuthorizeView>
     @if (@badgeContent != 0)
     {

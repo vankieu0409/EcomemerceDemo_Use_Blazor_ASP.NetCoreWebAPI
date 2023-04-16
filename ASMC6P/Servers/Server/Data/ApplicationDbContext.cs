@@ -1,9 +1,6 @@
 ﻿using ASMC6P.Shared.Entities;
 
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 using System.Diagnostics.CodeAnalysis;
 
@@ -18,8 +15,11 @@ public class ApplicationDbContext : IdentityDbContext<UserEntity, RoleEntity, Gu
     }
     public ApplicationDbContext([NotNull] DbContextOptions<ApplicationDbContext> options) : base(options)
     {
+        ChangeTracker.LazyLoadingEnabled = false;
         ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         ChangeTracker.LazyLoadingEnabled = false;
+        ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
