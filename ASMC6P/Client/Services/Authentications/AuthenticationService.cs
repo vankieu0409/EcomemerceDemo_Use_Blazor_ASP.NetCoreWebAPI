@@ -1,13 +1,13 @@
-﻿using ASMC6P.Shared.Dtos;
+﻿using System.Net.Http.Json;
+using System.Text.Json;
+
+using ASMC6P.Shared.Dtos;
 using ASMC6P.Shared.Entities;
 using ASMC6P.Shared.ViewModels;
 
 using Blazored.LocalStorage;
 
 using Microsoft.AspNetCore.Components.Authorization;
-
-using System.Net.Http.Json;
-using System.Text.Json;
 
 namespace ASMC6P.Client.Services.Authentications;
 

@@ -82,6 +82,7 @@ public class AuthenticationService : IAuthenticationService
 
     public async Task<bool> Update(UpdateProfileVM resquest)
     {
+
         var userEntity = await _userManager.FindByIdAsync(resquest.Id.ToString());
         _mapper.Map(resquest, userEntity);
         if (userEntity == null) return false;
@@ -184,6 +185,7 @@ public class AuthenticationService : IAuthenticationService
     {
         var userRoles = _roleRepository.AsQueryable().FirstOrDefault(p =>
             p.Id == _context.UserRoles.Where(c => c.UserId == user.Id).Select(c => c.RoleId).FirstOrDefault());
+
         List<Claim> authClaims = new()
         {
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
